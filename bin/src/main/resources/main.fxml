@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.rocketgit.components.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
+<BorderPane prefHeight="600.0" prefWidth="800.0" stylesheets="main-stylesheet.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rocketgit.MainController">
+   <center>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <center>
+            <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+              <columns>
+                <TableColumn editable="false" prefWidth="75.0" sortable="false" text="%committree_column_graph" />
+                <TableColumn editable="false" prefWidth="75.0" sortable="false" text="%committree_column_commit" />
+                  <TableColumn editable="false" prefWidth="75.0" sortable="false" text="%committree_column_author" />
+                  <TableColumn editable="false" prefWidth="275.3399963378906" sortable="false" text="%committree_column_description" />
+                  <TableColumn editable="false" minWidth="0.0" prefWidth="99.15997314453125" sortable="false" text="%committree_column_date" />
+              </columns>
+            </TableView>
+         </center>
+         <top>
+            <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+              <items>
+                  <Label text="Repo Name" style="-fx-font-size: 15;"/>
+                  <Pane HBox.hgrow="ALWAYS" />
+                  <ChoiceBox prefWidth="150.0" styleClass="rounded-borders" />
+              </items>
+            </ToolBar>
+         </top>
+      </BorderPane>
+   </center>
+   <left>
+      <VBox prefHeight="560.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <CustomTextField styleClass="rounded-borders" promptText="%repo_tree_filter">
+            <left>
+                <Label style="-fx-padding: 0 2 0 7;">
+                    <graphic>
+                        <FontAwesomeIconView style="-glyph-name: SEARCH;"/>
+                    </graphic>
+                </Label>
+            </left>
+           <VBox.margin>
+              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+           </VBox.margin>
+        </CustomTextField>
+        <Label text="%repo_tree_header">
+          <VBox.margin>
+              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+          </VBox.margin>
+        </Label>
+        <TreeView fx:id="treeViewRepoList" prefHeight="560.0" prefWidth="200.0" />
+      </VBox>
+   </left>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="%menu_file">
+            <items>
+              <IconMenuItem icon="SIGN_OUT" text="%menu_file_exit" onAction="#exit"/>
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="%menu_repo">
+              <items>
+                  <IconMenuItem icon="PLUS_CIRCLE" text="%menu_repo_new"/>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <IconMenuItem icon="ARCHIVE" text="%menu_repo_stage" />
+                  <IconMenuItem icon="CHECK" text="%menu_repo_commit" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <IconMenuItem icon="ARROW_DOWN" text="%menu_repo_pull" />
+                  <IconMenuItem icon="ARROW_UP" text="%menu_repo_push" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="%menu_commit">
+               <items>
+                  <IconMenuItem icon="PLUS_CIRCLE" text="%menu_commit_all" />
+                  <IconMenuItem icon="MEDKIT" text="%menu_commit_amend" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="%menu_branch">
+              <items>
+                  <IconMenuItem icon="CODE_FORK" text="%menu_branch_create" />
+                  <IconMenuItem icon="EXCHANGE" text="%menu_branch_checkout" />
+                  <IconMenuItem icon="ARROW_LEFT" text="%menu_branch_merge" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="%menu_remote">
+              <items>
+                  <IconMenuItem fx:id="menuRemoteAdd" icon="CLOUD" text="%menu_remote_add" />
+                  <IconMenuItem icon="EDIT" text="%menu_remote_update" />
+                  <IconMenuItem icon="MINUS_CIRCLE" text="%menu_remote_remove" />
+              </items>
+            </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>

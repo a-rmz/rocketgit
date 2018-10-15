@@ -10,6 +10,8 @@ deploy:
   api_key: $API_KEY
   file: target/rocketgit-1.0-SNAPSHOT-jar-with-dependencies.jar
   skip_cleanup: true
+  prerelease: true
+  name: "$(git log -1 --pretty=%B)"
   on:
     repo: a-rmz/rocketgit
     branch: feat/circle-ci

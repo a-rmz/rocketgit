@@ -10,6 +10,9 @@
 * JavaFX Support
 * [SceneBuilder](https://gluonhq.com/products/scene-builder/) (Recommended)
 * IDE (Eclipse or IntelliJ Idea recommended)
+* [Maven](https://maven.apache.org/)
+
+#### Running with an IDE
 
 1. Clone the code:
     * Via HTTPS:
@@ -26,4 +29,26 @@
 3. Create a build task to run the Main class
 4. Run the project
 
- 
+#### Running with Maven
+
+ 1. Clone the code:
+     * Via HTTPS:
+      ```bash
+      $ git clone https://github.com/a-rmz/rocketgit.git
+      ```
+     * Via SSH:
+      ```bash
+      $ git clone git@github.com:a-rmz/rocketgit.git
+      ```
+2. Install the dependencies
+    ```sh
+    $ mvn install
+    ``` 
+3. Build the project:
+    ```sh
+    $ mvn clean package
+    ```
+4. Run the project:
+    ```sh
+    $ java -jar target/rocketgit-1.0-SNAPSHOT-jar-with-dependencies.jar
+    ```

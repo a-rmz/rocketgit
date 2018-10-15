@@ -14,4 +14,4 @@ deploy:
   name: "$(git log -1 --pretty=%B)"
   on:
     repo: a-rmz/rocketgit
-    branch: feat/circle-ci
+    branch: master

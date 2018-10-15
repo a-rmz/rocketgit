@@ -1,5 +1,17 @@
 language: java
 jdk:
-  - oraclejdk8
+- oraclejdk8
 script:
-  - mvn package
+- mvn package
+before_deploy:
+  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+deploy:
+  provider: releases
+  api_key: $API_KEY
+  file: target/rocketgit-1.0-SNAPSHOT-jar-with-dependencies.jar
+  skip_cleanup: true
+  prerelease: true
+  name: "$(git log -1 --pretty=%B)"
+  on:
+    repo: a-rmz/rocketgit
+    branch: master

@@ -11,7 +11,7 @@ deploy:
   file: target/rocketgit-1.0-SNAPSHOT-jar-with-dependencies.jar
   skip_cleanup: true
   prerelease: true
-  name: "$(git log -1 --pretty=%B)"
+  name: "${TRAVIS_BUILD_NUMBER}-${TRAVIS_BRANCH}-${TRAVIS_BUILD_ID}"
   on:
     repo: a-rmz/rocketgit
     branch: master

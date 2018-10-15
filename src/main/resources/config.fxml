@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.rocketgit.components.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
+<?import org.controlsfx.control.ToggleSwitch?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.HBox?>
+
+      <BorderPane fx:id="border_pane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" stylesheets="main-stylesheet.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rocketgit.controller.ConfigController" >
+         <center>
+						<VBox prefHeight="200.0" prefWidth="200.0" >
+			   <children>
+				  <ScrollPane>
+					 <content>
+						<VBox spacing="15.0">
+						   <children>
+						   <Label text="%config_config" style="-fx-font-size: 15;" />
+							  <GridPane hgap="10.0" prefHeight="76.0" prefWidth="350.0" vgap="20.0">
+								 <children>
+									<Label text="%config_scope">
+									   <GridPane.margin>
+										  <Insets bottom="5.0" top="5.0" />
+									   </GridPane.margin>
+									</Label>
+									<Label text="%config_mail" GridPane.rowIndex="1">
+									   <GridPane.margin>
+										  <Insets bottom="5.0" top="5.0" />
+									   </GridPane.margin>
+									</Label>
+									<Label text="%config_editor" GridPane.rowIndex="2">
+									   <GridPane.margin>
+										  <Insets bottom="5.0" top="5.0" />
+									   </GridPane.margin>
+									</Label>
+									<ChoiceBox fx:id="config_scope" prefWidth="150.0" GridPane.columnIndex="1">
+									   <GridPane.margin>
+										  <Insets bottom="5.0" top="5.0" />
+									   </GridPane.margin>
+									</ChoiceBox>
+									<TextField fx:id="config_mail" prefHeight="25.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+									   <GridPane.margin>
+										  <Insets bottom="5.0" top="5.0" />
+									   </GridPane.margin>
+									</TextField>
+									<TextField fx:id="config_editor" prefHeight="49.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+									   <GridPane.margin>
+										  <Insets bottom="5.0" top="5.0" />
+									   </GridPane.margin>
+									</TextField>
+								 </children>
+								 <columnConstraints>
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="50.0" />
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="150.0" />
+								 </columnConstraints>
+								 <rowConstraints>
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								 </rowConstraints>
+								 <opaqueInsets>
+									<Insets />
+								 </opaqueInsets>
+								 <VBox.margin>
+									<Insets bottom="10.0" left="30.0" top="10.0" />
+								 </VBox.margin>
+								 <padding>
+									<Insets left="10.0" right="20.0" />
+								 </padding>
+							  </GridPane>
+							  <Line endX="550.0" opacity="0.4" VBox.vgrow="SOMETIMES">              
+							  </Line>
+							  <Label text="%config_color" style="-fx-font-size: 15;" />
+							  <GridPane hgap="5.0" vgap="5.0">
+								 <children>
+									<ToggleSwitch text="%config_ui" fx:id="config_ui" mnemonicParsing="false" />
+								   </children>
+								 <columnConstraints>
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="135.0" minWidth="10.0" prefWidth="121.0" />
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="159.0" minWidth="10.0" prefWidth="150.0" />
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="148.0" minWidth="10.0" prefWidth="142.0" />
+								 </columnConstraints>
+								 <rowConstraints>
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								 </rowConstraints>
+								 <VBox.margin>
+									<Insets left="30.0" right="100.0" />
+								 </VBox.margin>
+								 <padding>
+									<Insets left="10.0" />
+								 </padding>
+							  </GridPane>
+							  
+							  <HBox alignment="CENTER_LEFT" prefHeight="31.0" >
+								 <children>            
+									<ColorPicker fx:id="config_branch_color" prefHeight="30.0" prefWidth="100.0">
+									   <HBox.margin>
+										  <Insets left="20.0" />
+									   </HBox.margin>
+									</ColorPicker>
+									<Label text="%config_branch" maxWidth="150.0" prefWidth="150.0">
+									   <HBox.margin>
+										  <Insets left="10.0" />
+									   </HBox.margin>
+									</Label>
+									<Button fx:id="config_branch_open" styleClass="expand" onAction="#collapseBranch" mnemonicParsing="false">
+									   <HBox.margin>
+										  <Insets left="150.0" />
+									   </HBox.margin>
+									</Button>
+								 </children>
+							  </HBox>
+							  
+							  <GridPane fx:id="config_branch_grid" styleClass="mGrid" hgap="10.0" vgap="5.0">
+								 <children>
+									<ColorPicker fx:id="config_branch_current" prefHeight="30.0" prefWidth="100.0" />
+									<ColorPicker fx:id="config_branch_local" prefHeight="30.0" prefWidth="100.0" GridPane.rowIndex="1" />
+									<ColorPicker fx:id="config_branch_remote" prefHeight="30.0" prefWidth="100.0" GridPane.rowIndex="2" />
+									<ColorPicker fx:id="config_branch_upstream" prefHeight="30.0" prefWidth="100.0" GridPane.rowIndex="3" />
+									<ColorPicker fx:id="config_branch_plain" prefHeight="30.0" prefWidth="100.0" GridPane.rowIndex="4" />
+									<Label text="%config_branch_current" GridPane.columnIndex="1"  />
+									<Label text="%config_branch_local" GridPane.columnIndex="1"  GridPane.rowIndex="1" />
+									<Label text="%config_branch_remote" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+									<Label text="%config_branch_upstream" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+									<Label text="%config_branch_plain"  GridPane.columnIndex="1" GridPane.rowIndex="4" />
+									<Label text="%config_branch_current_hint" GridPane.columnIndex="2" />
+									<Label text="%config_branch_local_hint" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+									<Label text="%config_branch_remote_hint" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+									<Label text="%config_branch_upstream_hint" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+									<Label text="%config_branch_plain_hint" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+								 </children>
+								 <columnConstraints>
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="250.0" />
+								 </columnConstraints>
+								 <rowConstraints>
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								 </rowConstraints>
+								 <VBox.margin>
+									<Insets left="40.0" right="10.0" />
+								 </VBox.margin>
+							  </GridPane>
+							  <HBox alignment="CENTER_LEFT" prefHeight="31.0" >
+								 <children>            
+									<ColorPicker fx:id="config_diff_color" prefHeight="30.0" prefWidth="100.0">
+									   <HBox.margin>
+										  <Insets left="20.0" />
+									   </HBox.margin>
+									</ColorPicker>
+									<Label text="%config_diff" maxWidth="150.0" prefWidth="150.0">
+									   <HBox.margin>
+										  <Insets left="10.0" />
+									   </HBox.margin>
+									</Label>
+									<Button  fx:id="config_diff_open" styleClass="expand" onAction="#collapseDiff" mnemonicParsing="false" >
+									   <HBox.margin>
+										  <Insets left="150.0" />
+									   </HBox.margin>
+									</Button>
+								 </children>
+							  </HBox>
+							  <GridPane fx:id="config_diff_grid" hgap="10.0" vgap="5.0">
+								<columnConstraints>
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="250.0" />
+								</columnConstraints>
+								<rowConstraints>
+								  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								</rowConstraints>
+								 <children>
+									<ColorPicker fx:id="config_diff_context" prefWidth="100.0"/>
+									<ColorPicker fx:id="config_diff_meta" prefWidth="100.0" GridPane.rowIndex="1" />
+									<ColorPicker fx:id="config_diff_frag" prefWidth="100.0" GridPane.rowIndex="2" />
+									<ColorPicker fx:id="config_diff_old" prefWidth="100.0" GridPane.rowIndex="3" />
+									<ColorPicker fx:id="config_diff_new" prefWidth="100.0" GridPane.rowIndex="4" />
+									<ColorPicker fx:id="config_diff_commit" prefWidth="100.0" GridPane.rowIndex="5" />
+									<Label text="%config_diff_context" GridPane.columnIndex="1"/>
+									<Label text="%config_diff_meta" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+									<Label text="%config_diff_frag" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+									<Label text="%config_diff_old" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+									<Label text="%config_diff_new" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+									<Label text="%config_diff_commit" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+									<Label text="%config_diff_context_hint" GridPane.columnIndex="2" />
+									<Label text="%config_diff_meta_hint" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+									<Label text="%config_diff_frag_hint" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+									<Label text="%config_diff_old_hint" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+									<Label text="%config_diff_new_hint" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+									<Label text="%config_diff_commit_hint" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+								 </children>
+								 <VBox.margin>
+									<Insets left="40.0" right="10.0" />
+								 </VBox.margin>
+							  </GridPane>
+							  <!-- Decorate colors -->
+							  <HBox alignment="CENTER_LEFT" prefHeight="31.0" >
+								 <children>            
+									<ColorPicker fx:id="config_decorate_color" prefHeight="31.0" prefWidth="100.0">
+									   <HBox.margin>
+										  <Insets left="20.0" />
+									   </HBox.margin>
+									</ColorPicker>
+									<Label text="%config_decorate" maxWidth="150.0" prefWidth="150.0">
+									   <HBox.margin>
+										  <Insets left="10.0" />
+									   </HBox.margin>
+									</Label>
+									<Button  fx:id="config_decorate_open" styleClass="expand" onAction="#collapseDecorate" mnemonicParsing="false" >
+									   <HBox.margin>
+										  <Insets left="150.0" />
+									   </HBox.margin>
+									</Button>
+								 </children>
+							  </HBox>
+						 
+							  <GridPane fx:id="config_decorate_grid" hgap="10.0" vgap="5.0" >
+								<columnConstraints>
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="250.0" />
+								</columnConstraints>
+								<rowConstraints>
+								  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								</rowConstraints>
+								 <children>
+									<ColorPicker fx:id="config_decorate_branch" prefWidth="100.0"/>
+									<ColorPicker fx:id="config_decorate_remote" prefWidth="100.0" GridPane.rowIndex="1" />
+									<ColorPicker fx:id="config_decorate_tag" prefWidth="100.0" GridPane.rowIndex="2" />
+									<ColorPicker fx:id="config_decorate_stash" prefWidth="100.0" GridPane.rowIndex="3" />
+									<ColorPicker fx:id="config_decorate_head" prefWidth="100.0" GridPane.rowIndex="4" />
+									<Label text="%config_decorate_branch" GridPane.columnIndex="1"/>
+									<Label text="%config_decorate_remote" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+									<Label text="%config_decorate_tag" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+									<Label text="%config_decorate_stash" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+									<Label text="%config_decorate_head" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+								 </children>
+								 <VBox.margin>
+									<Insets left="40.0" right="10.0" />
+								 </VBox.margin>
+							  </GridPane>
+							   <!-- Interactive colors -->
+							  <HBox alignment="CENTER_LEFT" prefHeight="31.0" >
+								 <children>            
+									<ColorPicker fx:id="config_interactive_color" prefHeight="30.0" prefWidth="100.0">
+									   <HBox.margin>
+										  <Insets left="20.0" />
+									   </HBox.margin>
+									</ColorPicker>
+									<Label text="%config_interactive" maxWidth="150.0" prefWidth="150.0">
+									   <HBox.margin>
+										  <Insets left="10.0" />
+									   </HBox.margin>
+									</Label>
+									<Button  fx:id="config_interactive_open" styleClass="expand" onAction="#collapseInteractive" mnemonicParsing="false" >
+									   <HBox.margin>
+										  <Insets left="150.0" />
+									   </HBox.margin>
+									</Button>
+								 </children>
+							  </HBox>
+							  <GridPane fx:id="config_interactive_grid" hgap="10.0" vgap="5.0">
+								<columnConstraints>
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="250.0" />
+								</columnConstraints>
+								<rowConstraints>
+								  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								</rowConstraints>
+								 <children>
+									<ColorPicker fx:id="config_interactive_promt" prefWidth="100.0"/>
+									<ColorPicker fx:id="config_interactive_header" prefWidth="100.0" GridPane.rowIndex="1" />
+									<ColorPicker fx:id="config_interactive_help" prefWidth="100.0" GridPane.rowIndex="2" />
+									<ColorPicker fx:id="config_interactive_error" prefWidth="100.0" GridPane.rowIndex="3" />
+									<Label text="%config_interactive_promt" GridPane.columnIndex="1"/>
+									<Label text="%config_interactive_header" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+									<Label text="%config_interactive_help" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+									<Label text="%config_interactive_error" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+								 </children>
+								 <VBox.margin>
+									<Insets left="40.0" right="10.0" />
+								 </VBox.margin>
+							  </GridPane>
+								<!-- Status colors -->
+							  <HBox alignment="CENTER_LEFT" prefHeight="31.0" >
+								 <children>            
+									<ColorPicker fx:id="config_status_color" prefHeight="30.0" prefWidth="100.0">
+									   <HBox.margin>
+										  <Insets left="20.0" />
+									   </HBox.margin>
+									</ColorPicker>
+									<Label text="%config_status" maxWidth="150.0" prefWidth="150.0">
+									   <HBox.margin>
+										  <Insets left="10.0" />
+									   </HBox.margin>
+									</Label>
+									<Button fx:id="config_status_open" styleClass="expand" onAction="#collapseStatus" mnemonicParsing="false" >
+									   <HBox.margin>
+										  <Insets left="150.0" />
+									   </HBox.margin>
+									</Button>
+								 </children>
+							  </HBox>
+							  
+							  <GridPane fx:id="config_status_grid" hgap="10.0" vgap="5.0">
+								<children>
+									<ColorPicker prefWidth="100.0" fx:id="config_status_header" />
+									<ColorPicker prefWidth="100.0" fx:id="config_status_added" GridPane.rowIndex="1" />
+									<ColorPicker prefWidth="100.0" fx:id="config_status_changed" GridPane.rowIndex="2" />
+									<ColorPicker prefWidth="100.0" fx:id="config_status_untracked" GridPane.rowIndex="3" />
+									<ColorPicker prefWidth="100.0" fx:id="config_status_branch" GridPane.rowIndex="4" />
+									<ColorPicker prefWidth="100.0" fx:id="config_status_nobranch" GridPane.rowIndex="5" />
+									<ColorPicker prefWidth="100.0" fx:id="config_status_unmerged" GridPane.rowIndex="6" />
+									<Label text="%config_status_header" GridPane.columnIndex="1"/>
+									<Label text="%config_status_added" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+									<Label text="%config_status_changed" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+									<Label text="%config_status_untracked" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+									<Label text="%config_status_branch" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+									<Label text="%config_status_nobranch" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+									<Label text="%config_status_unmerged" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+									<Label text="%config_status_header_hint" GridPane.columnIndex="2" />
+									<Label text="%config_status_added_hint" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+									<Label text="%config_status_changed_hint" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+									<Label text="%config_status_untracked_hint" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+									<Label text="%config_status_branch_hint" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+									<Label text="%config_status_nobranch_hint" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+									<Label text="%config_status_unmerged_hint" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+								 </children>
+								<columnConstraints>
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+									<ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="250.0" />
+								</columnConstraints>
+								<rowConstraints>
+								  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+								  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+									<RowConstraints />
+								</rowConstraints>
+							 
+								 <VBox.margin>
+									<Insets left="40.0" right="10.0" />
+								 </VBox.margin>
+							  </GridPane>
+						   </children>
+						   <HBox  alignment="BASELINE_RIGHT" >
+						   		<Button text="%config_save" fx:id="config_save" />
+						   </HBox>
+						   <padding>
+							  <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+						   </padding>
+						</VBox>
+					 </content>
+					  <padding>
+							  <Insets bottom="10.0" top="10.0" />
+					  </padding>
+				  </ScrollPane>
+			   </children>
+			</VBox>
+
+         </center>
+         <top>
+            <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+              <items>
+                  <Label text="Repo Name" style="-fx-font-size: 15;"/>
+                  <Pane HBox.hgrow="ALWAYS" />
+                  <ChoiceBox prefWidth="150.0" styleClass="rounded-borders" />
+              </items>
+            </ToolBar>
+         </top>
+      </BorderPane>

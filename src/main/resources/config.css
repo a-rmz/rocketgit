@@ -1,0 +1,16 @@
+.expand {
+	-fx-background-color: #FF5733;
+	-fx-background-size: 18 18;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position:left;   
+	-fx-width: 25px;
+	-fx-height: 25px;
+	-fx-background-image: url("expand_more.png");	
+}
+
+.expand.show {
+		-fx-background-image: url("expand_less.png");		
+}
+
+
+	

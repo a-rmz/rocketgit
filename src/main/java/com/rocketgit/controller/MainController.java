@@ -142,7 +142,7 @@ public class MainController {
     // Evento para abrir el Tree
     public void openTreeView() {
     	try {
-			loadVista("tree.fxml");
+			loadVista("diff.fxml");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

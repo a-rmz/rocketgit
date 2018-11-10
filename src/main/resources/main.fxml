@@ -6,7 +6,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import org.controlsfx.control.textfield.CustomTextField?>
-<?import org.controlsfx.control.NotificationPane?>
 <BorderPane fx:id="root" prefHeight="600.0" prefWidth="800.0" stylesheets="main-stylesheet.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rocketgit.controller.MainController">
    <center>
    <StackPane fx:id="stack_pane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
@@ -46,6 +45,7 @@
               <items>
                   <IconMenuItem icon="PLUS_CIRCLE" onAction="#openNew" text="%menu_repo_new"/>
                   <IconMenuItem fx:id="config" onAction="#openConfig"  icon="ADJUST" text="Config"/>
+                  <IconMenuItem fx:id="diff"  icon="FILE_ALT" text="Diff"/>
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <IconMenuItem icon="ARCHIVE" text="%menu_repo_stage" />
                   <IconMenuItem icon="CHECK" text="%menu_repo_commit" />

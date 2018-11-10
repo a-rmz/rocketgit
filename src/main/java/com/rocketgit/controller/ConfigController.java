@@ -1,5 +1,7 @@
 package com.rocketgit.controller;
 
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -7,8 +9,6 @@ import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import org.controlsfx.control.ToggleSwitch;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
 
 public class ConfigController {
 	
@@ -64,7 +64,7 @@ public class ConfigController {
 	
 	
 	public void initGrid() {
-		// Para que todos los grid estén ocultos
+		// Para que todos los grid estï¿½n ocultos
 		config_branch_grid.setVisible(false);
 		config_branch_grid.managedProperty().bind(config_branch_grid.visibleProperty());
 		

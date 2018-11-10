@@ -1,9 +1,5 @@
 package com.rocketgit.controller;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Locale;
-import java.util.ResourceBundle;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -20,6 +16,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class MainController {
 

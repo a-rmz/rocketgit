@@ -44,11 +44,12 @@
             <Menu mnemonicParsing="false" text="%menu_repo">
               <items>
                   <IconMenuItem icon="PLUS_CIRCLE" onAction="#openNew" text="%menu_repo_new"/>
+                  <IconMenuItem fx:id="statusAction" onAction="#showStatus"  icon="ADJUST" text="%menu_repo_status"/>
                   <IconMenuItem fx:id="config" onAction="#openConfig"  icon="ADJUST" text="Config"/>
                   <IconMenuItem fx:id="diff"  icon="FILE_ALT" text="Diff"/>
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <IconMenuItem icon="ARCHIVE" text="%menu_repo_stage" />
-                  <IconMenuItem icon="CHECK" text="%menu_repo_commit" />
+                  <IconMenuItem fx:id="addToStageButton" onAction="#addToStage" icon="ARCHIVE" text="%menu_repo_stage" />
+                  <IconMenuItem onAction="#commitStaged" icon="CHECK" text="%menu_repo_commit" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <IconMenuItem icon="ARROW_DOWN" text="%menu_repo_pull" />
                   <IconMenuItem icon="ARROW_UP" text="%menu_repo_push" />

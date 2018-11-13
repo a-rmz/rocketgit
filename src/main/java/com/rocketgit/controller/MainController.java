@@ -1,5 +1,6 @@
 package com.rocketgit.controller;
 
+import com.rocketgit.components.IconMenuItem;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
@@ -11,18 +12,25 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Window;
+import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 public class MainController {
 
     @FXML
     TreeView<com.rocketgit.objects.Repository> treeViewRepoList;
-   
+
+    TreeController treeController;
+    ResourceBundle bundle;
     
     @FXML
     StackPane stack_pane;
@@ -31,16 +39,22 @@ public class MainController {
     BorderPane root;
 
     @FXML
+    IconMenuItem addToStageButton;
+
+    @FXML
     public void initialize() {
         initRepoList();
+        bundle = ResourceBundle.getBundle(
+            "i18n.main",
+            new Locale.Builder().setLanguage("en").build()
+        );
     }
 
     public void exit(ActionEvent actionEvent) {
         Platform.exit();
     }
-    
-    
 
+    
     // TODO Remove dummy data
     private void initRepoList() {
     	// inicializamos la lista de repositorios
@@ -133,15 +147,107 @@ public class MainController {
     		e.printStackTrace();
     	}
     }
-    
+
     // Evento para abrir el Tree
     public void openTreeView(String path) {
     	try {
-			TreeController treeController = loadView("tree.fxml").getController();
+			treeController = loadView("tree.fxml").getController();
 			treeController.setRepo("Rocket.Git", path);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}  
+    }
+
+
+    // Git interaction methods
+
+    public void showStatus() {
+        if (treeController != null) {
+            try {
+                Status status = treeController.git.status().call();
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(bundle.getString("status/title"));
+                alert.setHeaderText(bundle.getString("status/header"));
+
+                VBox customContent = new VBox();
+
+                Set<String> added = status.getChanged();
+                Set<String> uncommittedChanges = status.getModified();
+                Set<String> untracked = status.getUntracked();
+
+                Text addedText = new Text(bundle.getString("status/added"));
+                addedText.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
+                customContent.getChildren().add(addedText);
+                added.forEach(line -> customContent.getChildren().add(new Text(line)));
+                customContent.getChildren().add(new Text(""));
+
+                Text modifiedText = new Text(bundle.getString("status/modified"));
+                modifiedText.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
+                customContent.getChildren().add(modifiedText);
+                uncommittedChanges.forEach(line -> customContent.getChildren().add(new Text(line)));
+                customContent.getChildren().add(new Text(""));
+
+                Text untrackedText = new Text(bundle.getString("status/untracked"));
+                untrackedText.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
+                customContent.getChildren().add(untrackedText);
+                untracked.forEach(line -> customContent.getChildren().add(new Text(line)));
+                customContent.getChildren().add(new Text(""));
+
+                alert.getDialogPane().setContent(customContent);
+                alert.getDialogPane().setGraphic(null);
+                alert.showAndWait();
+            } catch (GitAPIException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void addToStage() {
+        if (treeController != null) {
+            try {
+                Status status = treeController.git.status().call();
+
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle(bundle.getString("add_to_stage_dialog/title"));
+                alert.setHeaderText(bundle.getString("add_to_stage_dialog/header"));
+                VBox customContent = new VBox();
+                status.getModified().forEach(line -> customContent.getChildren().add(new Label(line)));
+                alert.getDialogPane().setContent(customContent);
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    treeController.git.add().addFilepattern(".").call();
+                }
+            } catch (GitAPIException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void commitStaged(ActionEvent actionEvent) {
+        if (treeController != null) {
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle(bundle.getString("commit_staged/title"));
+            dialog.setHeaderText(bundle.getString("commit_staged/header"));
+
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(message -> {
+                if (message.length() > 0) {
+                    try {
+                        treeController.git.commit().setAll(true).setMessage(message).call();
+                    } catch (GitAPIException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle(bundle.getString("commit_staged/error/title"));
+                    alert.setHeaderText(bundle.getString("commit_staged/error/header"));
+                    alert.setContentText(bundle.getString("commit_staged/error/message"));
+                    alert.showAndWait();
+                }
+            });
+        }
     }
 }

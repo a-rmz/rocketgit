@@ -226,7 +226,7 @@ public class MainController {
 
     public void commitStaged() {
         if (treeController != null) {
-            int size = 0;
+            int size;
             try {
                 size = treeController.git.status().call().getChanged().size();
             } catch (GitAPIException e) {
@@ -248,18 +248,18 @@ public class MainController {
                     if (message.length() > 0) {
                         try {
                             treeController.git.commit().setAll(true).setMessage(message).call();
-                            return;
                         } catch (GitAPIException e) {
                             e.printStackTrace();
                         }
                     } else {
                         alert.setContentText(bundle.getString("commit_staged/error/empty_message"));
+                        alert.showAndWait();
                     }
                 });
             } else {
                 alert.setContentText(bundle.getString("commit_staged/error/no_added"));
+                alert.showAndWait();
             }
-            alert.showAndWait();
         }
     }
 

@@ -52,7 +52,7 @@
                   <IconMenuItem onAction="#commitStaged" icon="CHECK" text="%menu_repo_commit" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <IconMenuItem icon="ARROW_DOWN" text="%menu_repo_pull" />
-                  <IconMenuItem icon="ARROW_UP" text="%menu_repo_push" />
+                  <IconMenuItem onAction="#push" icon="ARROW_UP" text="%menu_repo_push" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="%menu_branch">

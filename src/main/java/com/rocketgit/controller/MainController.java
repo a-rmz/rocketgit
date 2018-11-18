@@ -16,7 +16,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Window;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.transport.PushResult;
+import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
+import org.eclipse.jgit.transport.RemoteRefUpdate;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -297,6 +300,41 @@ public class MainController {
             } catch (GitAPIException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void push() {
+        if (treeController != null) try {
+            String branch = treeController.git.getRepository().getBranch();
+            try {
+                Iterable<PushResult> results = treeController.git
+                    .push()
+                    .setRemote("origin")
+                    .setRefSpecs(new RefSpec(branch + ":" + branch))
+                    .call();
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(bundle.getString("push/title"));
+
+                if (results.iterator().next()
+                    .getRemoteUpdates().iterator().next()
+                    .getStatus() == RemoteRefUpdate.Status.UP_TO_DATE) {
+                    alert.setHeaderText(null);
+                    alert.setContentText(bundle.getString("push/up_to_date/message"));
+                } else {
+                    alert.setHeaderText(bundle.getString("push/success/header"));
+                    alert.setContentText(bundle.getString("push/success/message"));
+                }
+                alert.showAndWait();
+            } catch (GitAPIException g) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle(bundle.getString("push/title"));
+                alert.setHeaderText(bundle.getString("push/error/header"));
+                alert.setContentText(bundle.getString("push/error/message"));
+                alert.showAndWait();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

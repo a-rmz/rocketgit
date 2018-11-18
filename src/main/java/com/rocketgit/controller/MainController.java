@@ -16,13 +16,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Window;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.transport.RemoteConfig;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 public class MainController {
 
@@ -226,7 +224,7 @@ public class MainController {
         }
     }
 
-    public void commitStaged(ActionEvent actionEvent) {
+    public void commitStaged() {
         if (treeController != null) {
             TextInputDialog dialog = new TextInputDialog("");
             dialog.setTitle(bundle.getString("commit_staged/title"));
@@ -248,6 +246,43 @@ public class MainController {
                     alert.showAndWait();
                 }
             });
+        }
+    }
+
+    public void listRemotes() {
+        if (treeController != null) {
+            try {
+                Collection<RemoteConfig> remotes = treeController.git.remoteList().call();
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(bundle.getString("remote_list/title"));
+
+                if (remotes.size() > 0) {
+                    alert.setHeaderText(bundle.getString("remote_list/header"));
+
+                    VBox customContent = new VBox();
+                    customContent.setSpacing(5);
+
+                    remotes.forEach(config -> {
+                        Text remoteName = new Text(String.format("%s", config.getName()));
+                        remoteName.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
+
+                        Text remoteFetch = new Text(String.format("Fetch:\t%s", config.getURIs().get(0)));
+                        Text remotePush = new Text(String.format("Push:\t%s", config.getURIs().get(0)));
+
+                        customContent.getChildren().addAll(remoteName, remoteFetch, remotePush, new Text(""));
+                        alert.getDialogPane().setGraphic(null);
+                        alert.getDialogPane().setContent(customContent);
+                    });
+                } else {
+                    alert.setHeaderText(null);
+                    alert.setContentText(bundle.getString("remote_list/no_remotes"));
+                }
+
+                alert.showAndWait();
+            } catch (GitAPIException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

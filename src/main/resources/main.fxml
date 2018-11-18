@@ -45,7 +45,7 @@
               <items>
                   <IconMenuItem icon="PLUS_CIRCLE" onAction="#openNew" text="%menu_repo_new"/>
                   <IconMenuItem fx:id="statusAction" onAction="#showStatus"  icon="ADJUST" text="%menu_repo_status"/>
-                  <IconMenuItem fx:id="config" onAction="#openConfig"  icon="ADJUST" text="Config"/>
+                  <IconMenuItem fx:id="config" onAction="#openConfig"  icon="COG" text="Config"/>
                   <IconMenuItem fx:id="diff"  icon="FILE_ALT" text="Diff"/>
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <IconMenuItem fx:id="addToStageButton" onAction="#addToStage" icon="ARCHIVE" text="%menu_repo_stage" />
@@ -54,12 +54,6 @@
                   <IconMenuItem icon="ARROW_DOWN" text="%menu_repo_pull" />
                   <IconMenuItem icon="ARROW_UP" text="%menu_repo_push" />
               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="%menu_commit">
-               <items>
-                  <IconMenuItem icon="PLUS_CIRCLE" text="%menu_commit_all" />
-                  <IconMenuItem icon="MEDKIT" text="%menu_commit_amend" />
-               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="%menu_branch">
               <items>
@@ -70,6 +64,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="%menu_remote">
               <items>
+                  <IconMenuItem onAction="#listRemotes" icon="LIST_UL" text="%menu_remote_list" />
                   <IconMenuItem fx:id="menuRemoteAdd" icon="CLOUD" text="%menu_remote_add" />
                   <IconMenuItem icon="EDIT" text="%menu_remote_update" />
                   <IconMenuItem icon="MINUS_CIRCLE" text="%menu_remote_remove" />

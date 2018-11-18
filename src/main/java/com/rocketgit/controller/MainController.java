@@ -226,26 +226,40 @@ public class MainController {
 
     public void commitStaged() {
         if (treeController != null) {
-            TextInputDialog dialog = new TextInputDialog("");
-            dialog.setTitle(bundle.getString("commit_staged/title"));
-            dialog.setHeaderText(bundle.getString("commit_staged/header"));
+            int size = 0;
+            try {
+                size = treeController.git.status().call().getChanged().size();
+            } catch (GitAPIException e) {
+                e.printStackTrace();
+                return;
+            }
 
-            Optional<String> result = dialog.showAndWait();
-            result.ifPresent(message -> {
-                if (message.length() > 0) {
-                    try {
-                        treeController.git.commit().setAll(true).setMessage(message).call();
-                    } catch (GitAPIException e) {
-                        e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(bundle.getString("commit_staged/error/title"));
+            alert.setHeaderText(bundle.getString("commit_staged/error/header"));
+
+            if (size > 0) {
+                TextInputDialog dialog = new TextInputDialog("");
+                dialog.setTitle(bundle.getString("commit_staged/title"));
+                dialog.setHeaderText(bundle.getString("commit_staged/header"));
+
+                Optional<String> result = dialog.showAndWait();
+                result.ifPresent(message -> {
+                    if (message.length() > 0) {
+                        try {
+                            treeController.git.commit().setAll(true).setMessage(message).call();
+                            return;
+                        } catch (GitAPIException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        alert.setContentText(bundle.getString("commit_staged/error/empty_message"));
                     }
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle(bundle.getString("commit_staged/error/title"));
-                    alert.setHeaderText(bundle.getString("commit_staged/error/header"));
-                    alert.setContentText(bundle.getString("commit_staged/error/message"));
-                    alert.showAndWait();
-                }
-            });
+                });
+            } else {
+                alert.setContentText(bundle.getString("commit_staged/error/no_added"));
+            }
+            alert.showAndWait();
         }
     }
 

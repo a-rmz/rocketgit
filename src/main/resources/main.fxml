@@ -51,7 +51,7 @@
                   <IconMenuItem fx:id="addToStageButton" onAction="#addToStage" icon="ARCHIVE" text="%menu_repo_stage" />
                   <IconMenuItem onAction="#commitStaged" icon="CHECK" text="%menu_repo_commit" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <IconMenuItem icon="ARROW_DOWN" text="%menu_repo_pull" />
+                  <IconMenuItem onAction="#pull" icon="ARROW_DOWN" text="%menu_repo_pull" />
                   <IconMenuItem onAction="#push" icon="ARROW_UP" text="%menu_repo_push" />
               </items>
             </Menu>

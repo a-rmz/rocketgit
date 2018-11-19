@@ -14,6 +14,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Window;
+import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.transport.PushResult;
@@ -309,6 +310,7 @@ public class MainController {
             try {
                 Iterable<PushResult> results = treeController.git
                     .push()
+                    // TODO: Remove hardcoded origin
                     .setRemote("origin")
                     .setRefSpecs(new RefSpec(branch + ":" + branch))
                     .call();
@@ -335,6 +337,44 @@ public class MainController {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void pull() {
+        if (treeController != null) {
+            String branch;
+            try {
+                branch = treeController.git.getRepository().getBranch();
+            } catch (IOException e) {
+                branch = "master";
+            }
+
+            try {
+                PullResult result = treeController.git
+                    .pull()
+                    .setRemoteBranchName(branch)
+                    .setRemote("origin")
+                    .call();
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(bundle.getString("pull/title"));
+
+                if (result.getMergeResult().getMergeStatus().toString().equals("Already-up-to-date")) {
+                    alert.setHeaderText(null);
+                    alert.setContentText(bundle.getString("pull/up_to_date/message"));
+                } else if (result.isSuccessful()) {
+                    alert.setHeaderText(bundle.getString("pull/success/header"));
+                    alert.setContentText(bundle.getString("pull/success/message") + result.getFetchedFrom());
+                } else {
+                   alert.setAlertType(Alert.AlertType.ERROR);
+                   alert.setHeaderText(bundle.getString("pull/other/header"));
+                   alert.setContentText(result.toString());
+                }
+
+                alert.showAndWait();
+            } catch (GitAPIException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

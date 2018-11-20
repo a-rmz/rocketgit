@@ -58,7 +58,7 @@
             <Menu mnemonicParsing="false" text="%menu_branch">
               <items>
                   <IconMenuItem onAction="#branchCreate" icon="CODE_FORK" text="%menu_branch_create" />
-                  <IconMenuItem icon="EXCHANGE" text="%menu_branch_checkout" />
+                  <IconMenuItem onAction="#branchCheckout" icon="EXCHANGE" text="%menu_branch_checkout" />
                   <IconMenuItem icon="ARROW_LEFT" text="%menu_branch_merge" />
                   <IconMenuItem onAction="#branchDelete" icon="TRASH_ALT" text="%menu_branch_delete" />
               </items>

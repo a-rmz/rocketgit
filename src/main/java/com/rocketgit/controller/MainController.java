@@ -16,6 +16,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Window;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.api.errors.CheckoutConflictException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.lib.Ref;
@@ -448,6 +449,46 @@ public class MainController {
                                 branch
                             )
                         );
+                    } catch (GitAPIException e) {
+                        alert.setHeaderText(bundle.getString("branch/error/header"));
+                        alert.setContentText(e.toString());
+                    }
+                } else {
+                    alert.setContentText(bundle.getString("branch/error/empty_name"));
+                }
+                alert.showAndWait();
+            });
+        }
+    }
+
+    public void branchCheckout() {
+        if (treeController != null) {
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle(bundle.getString("branch/title"));
+            dialog.setHeaderText(bundle.getString("branch/checkout/header"));
+
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(branch -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(bundle.getString("branch/title"));
+
+                if (branch.length() > 0) {
+                    try {
+                        treeController.git
+                            .checkout()
+                            .setName(branch)
+                            .call();
+
+                        alert.setHeaderText(bundle.getString("branch/success/header"));
+                        alert.setContentText(
+                            String.format("%s '%s'",
+                                bundle.getString("branch/checkout/success/message"),
+                                branch
+                            )
+                        );
+                    } catch (CheckoutConflictException e) {
+                        alert.setHeaderText(bundle.getString("branch/error/header"));
+                        alert.setContentText(bundle.getString("branch/error/checkout_conflict"));
                     } catch (GitAPIException e) {
                         alert.setHeaderText(bundle.getString("branch/error/header"));
                         alert.setContentText(e.toString());

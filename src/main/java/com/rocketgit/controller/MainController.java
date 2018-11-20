@@ -17,6 +17,8 @@ import javafx.stage.Window;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
@@ -25,6 +27,7 @@ import org.eclipse.jgit.transport.RemoteRefUpdate;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MainController {
 
@@ -375,6 +378,85 @@ public class MainController {
             } catch (GitAPIException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void branchCreate() {
+        if (treeController != null) {
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle(bundle.getString("branch/title"));
+            dialog.setHeaderText(bundle.getString("branch/create/header"));
+
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(branch -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(bundle.getString("branch/title"));
+
+                if (branch.length() > 0) {
+                    try {
+                        Ref ref = treeController.git
+                            .branchCreate()
+                            .setName(branch)
+                            .call();
+                        alert.setHeaderText(bundle.getString("branch/success/header"));
+                        alert.setContentText(
+                            String.format("%s %s (%s)",
+                                bundle.getString("branch/create/success/message"),
+                                branch,
+                                ref.getObjectId().abbreviate(6).name()
+                            )
+                        );
+                    } catch (RefAlreadyExistsException raee) {
+                        alert.setAlertType(Alert.AlertType.ERROR);
+                        alert.setHeaderText(bundle.getString("branch/error/header"));
+                        alert.setContentText(bundle.getString("branch/error/existing"));
+                    } catch (GitAPIException e) {
+                        alert.setHeaderText(bundle.getString("branch/error/header"));
+                        alert.setContentText(e.toString());
+                    }
+                } else {
+                    alert.setContentText(bundle.getString("branch/error/empty_name"));
+                }
+                alert.showAndWait();
+            });
+        }
+    }
+
+    public void branchDelete() {
+        if (treeController != null) {
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle(bundle.getString("branch/title"));
+            dialog.setHeaderText(bundle.getString("branch/delete/header"));
+
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(branch -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(bundle.getString("branch/title"));
+
+                if (branch.length() > 0) {
+                    try {
+                        treeController.git
+                            .branchDelete()
+                            .setBranchNames(branch)
+                            .setForce(true)
+                            .call();
+
+                        alert.setHeaderText(bundle.getString("branch/success/header"));
+                        alert.setContentText(
+                            String.format("%s %s",
+                                bundle.getString("branch/delete/success/message"),
+                                branch
+                            )
+                        );
+                    } catch (GitAPIException e) {
+                        alert.setHeaderText(bundle.getString("branch/error/header"));
+                        alert.setContentText(e.toString());
+                    }
+                } else {
+                    alert.setContentText(bundle.getString("branch/error/empty_name"));
+                }
+                alert.showAndWait();
+            });
         }
     }
 }

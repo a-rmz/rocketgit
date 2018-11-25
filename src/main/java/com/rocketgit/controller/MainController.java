@@ -1,17 +1,13 @@
 package com.rocketgit.controller;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -25,7 +21,7 @@ import java.util.ResourceBundle;
 public class MainController {
 
     @FXML
-    TreeView<String> treeViewRepoList;
+    TreeView<com.rocketgit.objects.Repository> treeViewRepoList;
    
     
     @FXML
@@ -36,8 +32,6 @@ public class MainController {
 
     @FXML
     public void initialize() {
-    	// 
-        openTreeView();
         initRepoList();
     }
 
@@ -52,27 +46,25 @@ public class MainController {
     	// inicializamos la lista de repositorios
     	// por ahora la información es dummy, se cambiará este método
         treeViewRepoList.setEditable(false);
-        TreeItem<String> root = new TreeItem<>();
-        FontAwesomeIconView icon = new FontAwesomeIconView();
-        icon.setGlyphName("GITHUB");
-        root.setGraphic(icon);
-        root.setValue("GitHub");
-        for (int i = 0; i < 7; i++) {
-            FontAwesomeIconView itemIcon = new FontAwesomeIconView();
-            itemIcon.setGlyphName("BOOK");
-            root.getChildren().add(new TreeItem<>("Repo " + i, itemIcon ));
-        }
+        treeViewRepoList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        TreeItem<com.rocketgit.objects.Repository> root = new TreeItem<>();
+        root.setGraphic(new FontAwesomeIconView(FontAwesomeIcon.GITHUB));
+        root.setValue(new com.rocketgit.objects.Repository("GitHub", ""));
+
+        root.getChildren()
+            .add(new TreeItem<>(
+                new com.rocketgit.objects.Repository("Rocket.Git", ".git"),
+                new FontAwesomeIconView(FontAwesomeIcon.BOOK)
+            ));
+
         root.setExpanded(true);
-        
+
         // Agregamos el evento de la lista para que al ser presionados abra el nuevo fxml
-        treeViewRepoList.setOnMouseClicked(new EventHandler<MouseEvent>()
-        {
-            @Override
-            public void handle(MouseEvent mouseEvent)
-            {         
-            	TreeItem<String> item = treeViewRepoList.getSelectionModel().getSelectedItem();                
-                openTreeView();
-                
+        treeViewRepoList.setOnMouseClicked(mouseEvent -> {
+            TreeItem<com.rocketgit.objects.Repository> item = treeViewRepoList.getSelectionModel().getSelectedItem();
+
+            if (item != null && item.isLeaf()) {
+                openTreeView(item.getValue().getPath());
             }
         });
         treeViewRepoList.setRoot(root);
@@ -84,7 +76,7 @@ public class MainController {
     }
     
     // Para cargar una nueva vista
-    public void loadVista(String fxml) throws IOException {
+    public FXMLLoader loadView(String fxml) throws IOException {
     	FXMLLoader loader = new FXMLLoader();
    	 
     	ResourceBundle rb = ResourceBundle.getBundle(
@@ -96,12 +88,14 @@ public class MainController {
     	Node root = (loader.load(getClass().getClassLoader().getResource(fxml).openStream()));
     	root.setStyle("-fx-font-family: 'Comfortaa';");
     	setView(root);
+
+    	return loader;
     }
     
     // Evento para abrir la configuracion 
     public void openConfig(ActionEvent actionEvent)  {    	
     	try {
-			loadVista("config.fxml");
+			loadView("config.fxml");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -141,9 +135,10 @@ public class MainController {
     }
     
     // Evento para abrir el Tree
-    public void openTreeView() {
+    public void openTreeView(String path) {
     	try {
-			loadVista("diff.fxml");
+			TreeController treeController = loadView("tree.fxml").getController();
+			treeController.setRepo("Rocket.Git", path);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

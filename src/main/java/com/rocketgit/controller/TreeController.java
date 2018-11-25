@@ -32,12 +32,16 @@ public class TreeController {
     Label treeRepoName;
 
     @FXML
+    Label treeRepoBranch;
+
+    @FXML
     TableView<Commit> commitTableView;
 
     public void setRepo(String name, String path) {
         try {
             git = Git.open(new File(path));
             treeRepoName.setText(name);
+            treeRepoBranch.setText(String.format("(%s)", git.getRepository().getBranch()));
 
             ArrayList<Commit> commits = new ArrayList<>();
 

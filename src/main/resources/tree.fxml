@@ -15,6 +15,7 @@
         <ToolBar prefHeight="40.0" prefWidth="277.0" BorderPane.alignment="CENTER">
             <items>
                 <Label fx:id="treeRepoName" style="-fx-font-size: 15;" text="Repo Name" />
+                <Label fx:id="treeRepoBranch" style="-fx-font-size: 13;" text="(current branch)" />
                 <Pane HBox.hgrow="ALWAYS" />
                 <ChoiceBox prefWidth="150.0" styleClass="rounded-borders" />
             </items>

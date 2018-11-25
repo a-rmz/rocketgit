@@ -10,22 +10,22 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Window;
 import org.eclipse.jgit.api.PullResult;
+import org.eclipse.jgit.api.RemoteAddCommand;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.CheckoutConflictException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.transport.PushResult;
-import org.eclipse.jgit.transport.RefSpec;
-import org.eclipse.jgit.transport.RemoteConfig;
-import org.eclipse.jgit.transport.RemoteRefUpdate;
+import org.eclipse.jgit.transport.*;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -271,43 +271,6 @@ public class MainController {
         }
     }
 
-    public void listRemotes() {
-        if (treeController != null) {
-            try {
-                Collection<RemoteConfig> remotes = treeController.git.remoteList().call();
-
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle(bundle.getString("remote_list/title"));
-
-                if (remotes.size() > 0) {
-                    alert.setHeaderText(bundle.getString("remote_list/header"));
-
-                    VBox customContent = new VBox();
-                    customContent.setSpacing(5);
-
-                    remotes.forEach(config -> {
-                        Text remoteName = new Text(String.format("%s", config.getName()));
-                        remoteName.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
-
-                        Text remoteFetch = new Text(String.format("Fetch:\t%s", config.getURIs().get(0)));
-                        Text remotePush = new Text(String.format("Push:\t%s", config.getURIs().get(0)));
-
-                        customContent.getChildren().addAll(remoteName, remoteFetch, remotePush, new Text(""));
-                        alert.getDialogPane().setGraphic(null);
-                        alert.getDialogPane().setContent(customContent);
-                    });
-                } else {
-                    alert.setHeaderText(null);
-                    alert.setContentText(bundle.getString("remote_list/no_remotes"));
-                }
-
-                alert.showAndWait();
-            } catch (GitAPIException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public void push() {
         if (treeController != null) try {
             String branch = treeController.git.getRepository().getBranch();
@@ -498,6 +461,100 @@ public class MainController {
                 }
                 alert.showAndWait();
             });
+        }
+    }
+
+    public void listRemotes() {
+        if (treeController != null) {
+            try {
+                Collection<RemoteConfig> remotes = treeController.git.remoteList().call();
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(bundle.getString("remote_list/title"));
+
+                if (remotes.size() > 0) {
+                    alert.setHeaderText(bundle.getString("remote_list/header"));
+
+                    VBox customContent = new VBox();
+                    customContent.setSpacing(5);
+
+                    remotes.forEach(config -> {
+                        Text remoteName = new Text(String.format("%s", config.getName()));
+                        remoteName.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
+
+                        Text remoteFetch = new Text(String.format("Fetch:\t%s", config.getURIs().get(0)));
+                        Text remotePush = new Text(String.format("Push:\t%s", config.getURIs().get(0)));
+
+                        customContent.getChildren().addAll(remoteName, remoteFetch, remotePush, new Text(""));
+                        alert.getDialogPane().setGraphic(null);
+                        alert.getDialogPane().setContent(customContent);
+                    });
+                } else {
+                    alert.setHeaderText(null);
+                    alert.setContentText(bundle.getString("remote_list/no_remotes"));
+                }
+
+                alert.showAndWait();
+            } catch (GitAPIException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void addRemote() {
+        if (treeController != null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(bundle.getString("status/title"));
+            alert.setHeaderText(bundle.getString("status/header"));
+
+            VBox customContent = new VBox();
+            customContent.setSpacing(10);
+
+            Label nameLabel, urlLabel;
+            nameLabel = new Label("Name:");
+            urlLabel = new Label("URL:");
+
+            HBox nameContent, urlContent;
+            nameContent = new HBox();
+            urlContent = new HBox();
+            nameContent.setSpacing(5);
+            urlContent.setSpacing(5);
+
+            TextField nameTextField, urlTextField;
+            nameTextField = new TextField();
+            urlTextField = new TextField();
+
+            nameContent.getChildren().addAll(nameLabel, nameTextField);
+            urlContent.getChildren().addAll(urlLabel, urlTextField);
+
+            customContent.getChildren().addAll(nameContent, urlContent);
+
+            alert.getDialogPane().setContent(customContent);
+            alert.getDialogPane().setGraphic(null);
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                String name = nameTextField.getText();
+                String url = urlTextField.getText();
+                RemoteAddCommand command = treeController.git.remoteAdd();
+
+                if (name.length() > 0) {
+                    URIish urIish;
+                    try {
+                        urIish = new URIish(url);
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+
+                    command.setName(name);
+                    command.setUri(urIish);
+                    try {
+                        command.call();
+                    } catch (GitAPIException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
     }
 }

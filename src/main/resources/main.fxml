@@ -61,7 +61,7 @@
               <items>
                   <IconMenuItem onAction="#branchCreate" icon="CODE_FORK" text="%menu_branch_create" />
                   <IconMenuItem onAction="#branchCheckout" icon="EXCHANGE" text="%menu_branch_checkout" />
-                  <!-- TODO -->
+                  <!-- TODO NOT DOING -->
                   <IconMenuItem icon="ARROW_LEFT" text="%menu_branch_merge" />
                   <IconMenuItem onAction="#branchDelete" icon="TRASH_ALT" text="%menu_branch_delete" />
               </items>
@@ -69,11 +69,10 @@
             <Menu mnemonicParsing="false" text="%menu_remote">
               <items>
                   <IconMenuItem onAction="#listRemotes" icon="LIST_UL" text="%menu_remote_list" />
-                  <!-- TODO -->
-                  <IconMenuItem fx:id="menuRemoteAdd" icon="CLOUD" text="%menu_remote_add" />
-                  <!-- TODO -->
+                  <IconMenuItem onAction="#addRemote" fx:id="menuRemoteAdd" icon="CLOUD" text="%menu_remote_add" />
+                  <!-- TODO NOT DOING -->
                   <IconMenuItem icon="EDIT" text="%menu_remote_update" />
-                  <!-- TODO -->
+                  <!-- TODO NOT DOING -->
                   <IconMenuItem icon="MINUS_CIRCLE" text="%menu_remote_remove" />
               </items>
             </Menu>

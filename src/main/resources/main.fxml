@@ -46,9 +46,11 @@
                   <IconMenuItem icon="PLUS_CIRCLE" onAction="#openNew" text="%menu_repo_new"/>
                   <IconMenuItem fx:id="statusAction" onAction="#showStatus"  icon="ADJUST" text="%menu_repo_status"/>
                   <IconMenuItem fx:id="config" onAction="#openConfig"  icon="COG" text="Config"/>
+                  <!-- TODO -->
                   <IconMenuItem fx:id="diff"  icon="FILE_ALT" text="Diff"/>
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <IconMenuItem fx:id="addToStageButton" onAction="#addToStage" icon="ARCHIVE" text="%menu_repo_stage" />
+                  <!-- TODO NOT DOING -->
                   <IconMenuItem onAction="#commitStaged" icon="CHECK" text="%menu_repo_commit" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <IconMenuItem onAction="#pull" icon="ARROW_DOWN" text="%menu_repo_pull" />
@@ -59,6 +61,7 @@
               <items>
                   <IconMenuItem onAction="#branchCreate" icon="CODE_FORK" text="%menu_branch_create" />
                   <IconMenuItem onAction="#branchCheckout" icon="EXCHANGE" text="%menu_branch_checkout" />
+                  <!-- TODO -->
                   <IconMenuItem icon="ARROW_LEFT" text="%menu_branch_merge" />
                   <IconMenuItem onAction="#branchDelete" icon="TRASH_ALT" text="%menu_branch_delete" />
               </items>
@@ -66,8 +69,11 @@
             <Menu mnemonicParsing="false" text="%menu_remote">
               <items>
                   <IconMenuItem onAction="#listRemotes" icon="LIST_UL" text="%menu_remote_list" />
+                  <!-- TODO -->
                   <IconMenuItem fx:id="menuRemoteAdd" icon="CLOUD" text="%menu_remote_add" />
+                  <!-- TODO -->
                   <IconMenuItem icon="EDIT" text="%menu_remote_update" />
+                  <!-- TODO -->
                   <IconMenuItem icon="MINUS_CIRCLE" text="%menu_remote_remove" />
               </items>
             </Menu>

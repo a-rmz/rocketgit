@@ -39,6 +39,7 @@ public class TreeController {
 
     public void setRepo(String name, String path) {
         try {
+        	System.out.println(path);
             git = Git.open(new File(path));
             treeRepoName.setText(name);
             treeRepoBranch.setText(String.format("(%s)", git.getRepository().getBranch()));

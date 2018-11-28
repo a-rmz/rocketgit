@@ -11,12 +11,19 @@ import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import com.rocketgit.controller.MainController;
+import com.rocketgit.database.DBQueryRepository;
+import com.rocketgit.database.MyDataSourceFactory;
+import com.rocketgit.objects.Repository;
+
 
 public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
     	// Con este abrimos el fxml que tiene el TreeView de repositorios y el tab
+    	
+    	// DBQueryRepository query = new DBQueryRepository(MyDataSourceFactory.getDataSource("Commons.MYSQL"));
     	
         FXMLLoader loader = new FXMLLoader();
         
@@ -38,7 +45,11 @@ public class Main extends Application {
             System.exit(0);
         }
         
+        
         Parent root = loader.load(getClass().getClassLoader().getResource("main.fxml").openStream());
+        
+        MainController controller = loader.getController();
+        controller.setStage(stage);
         
         root.setStyle("-fx-font-family: 'Comfortaa';");
         stage.setTitle(rb.getString("title"));

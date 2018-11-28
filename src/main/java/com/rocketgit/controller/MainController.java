@@ -1,6 +1,11 @@
 package com.rocketgit.controller;
 
+import com.rocketgit.Commons;
 import com.rocketgit.components.IconMenuItem;
+import com.rocketgit.database.DBQueryRepository;
+import com.rocketgit.database.MyDataSourceFactory;
+import com.rocketgit.objects.Repository;
+
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
@@ -9,29 +14,39 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.Callback;
+
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.RemoteAddCommand;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.CheckoutConflictException;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
+import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MainController {
 
+	private Stage stage;
+	
     @FXML
     TreeView<com.rocketgit.objects.Repository> treeViewRepoList;
 
@@ -46,6 +61,10 @@ public class MainController {
 
     @FXML
     IconMenuItem addToStageButton;
+    
+    public void setStage(Stage stage) {
+    	this.stage = stage;
+    }
 
     @FXML
     public void initialize() {
@@ -76,6 +95,16 @@ public class MainController {
                 new com.rocketgit.objects.Repository("Rocket.Git", ".git"),
                 new FontAwesomeIconView(FontAwesomeIcon.BOOK)
             ));
+        
+        DBQueryRepository query = new DBQueryRepository(MyDataSourceFactory.getDataSource(Commons.MYSQL));
+		ArrayList<Repository> repositories = query.getRepository();
+		repositories.forEach(r -> {
+			root.getChildren()
+            .add(new TreeItem<>(
+                r,
+                new FontAwesomeIconView(FontAwesomeIcon.BOOK)
+            ));
+		});
 
         root.setExpanded(true);
 
@@ -84,7 +113,8 @@ public class MainController {
             TreeItem<com.rocketgit.objects.Repository> item = treeViewRepoList.getSelectionModel().getSelectedItem();
 
             if (item != null && item.isLeaf()) {
-                openTreeView(item.getValue().getPath());
+            	System.out.println(item.getValue().getName());
+                openTreeView(item.getValue());
             }
         });
         treeViewRepoList.setRoot(root);
@@ -122,49 +152,16 @@ public class MainController {
 		}   	
     }
     
-    // Evento para abrir el dialogo de new repo
-    public void openNew(ActionEvent actionEvent) {
-    	
-    	try {
-
-    		FXMLLoader loader = new FXMLLoader();
-    	   	 
-        	ResourceBundle rb = ResourceBundle.getBundle(
-        				"i18n.main",
-        				new Locale.Builder().setLanguage("en").build()
-        				);
-        	loader.setResources(rb);
-        	loader.setCharset(Charset.forName("UTF-8"));
-        	VBox custom = (loader.load(getClass().getClassLoader().getResource("init.fxml").openStream()));
-        	// Se crea una alerta
-        	Alert alert = new Alert(Alert.AlertType.NONE);
-            alert.setTitle("New Git Repository");
-            
-            // Se hace un dialog pane
-        	DialogPane dialog = alert.getDialogPane();
-        	dialog.setContent(custom);
-        	
-        	// Se agrega a la ventana
-        	Window window = alert.getDialogPane().getScene().getWindow();
-            window.setOnCloseRequest(event -> window.hide());
-            alert.showAndWait();    
-    		
-    	} catch(IOException e) {
-    		e.printStackTrace();
-    	}
-    }
-
     // Evento para abrir el Tree
-    public void openTreeView(String path) {
+    public void openTreeView(Repository repository) {
     	try {
 			treeController = loadView("tree.fxml").getController();
-			treeController.setRepo("Rocket.Git", path);
+			treeController.setRepo(repository.getName(), repository.getPath());
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}  
     }
-
 
     // Git interaction methods
 
@@ -556,5 +553,170 @@ public class MainController {
                 }
             }
         }
+    }
+    
+    @FXML
+    public void openInit() throws IllegalStateException, GitAPIException {
+        Repository repo = openDialog("initrepo.fxml", 
+        		"Write the root of your init repository and name",
+        		"Init Git Repository", false);
+        System.out.println(repo);
+        if(repo != null) {
+             try (Git git = Git.init().setDirectory(new File(repo.getPath())).call()) {
+     			System.out.println("Call: Created repository: " + git.getRepository().getDirectory());
+     			// Para apuntar a la carpeta .git
+     			repo.setPath(repo.getPath() + "/.git");
+     			this.saveRepository(repo);
+     			this.updateTreeViewList(repo);
+             }	
+        }
+    }
+    
+    @FXML
+    public void openImport() {
+    	Repository repo = openDialog("initrepo.fxml",
+    			"Write the directory of your .git and the repository name", 
+    			"Import Git Repository", false);
+        System.out.println(repo);
+        if(repo != null) {
+        	repo.setPath(repo.getPath() + "/.git");
+        	File filegit = new File(repo.getPath());
+        	if(filegit.exists() && filegit.isDirectory()) {
+     			this.saveRepository(repo);
+     			this.updateTreeViewList(repo);
+        	} else this.errorAlert("No Git Repository", "There is not git repository in this root. Please try again with the correct directory.");
+        } 
+    }
+    
+    @FXML
+    public void openClone() throws InvalidRemoteException, TransportException, GitAPIException {
+    	Repository repo = openDialog("clone.fxml",
+    			"Write the directory and name of your repository. Write the url of the repository to clone", 
+    			"Clone Git Repository", true);
+        System.out.println(repo);
+        if(repo != null) {
+        	Git.cloneRepository().setURI(repo.getUrl()).setDirectory(new File(repo.getPath())).call();
+        	System.out.println("Repositorio clonado correctamente");
+        	repo.setPath(repo.getPath() + "/.git");
+        	this.saveRepository(repo);
+ 			this.updateTreeViewList(repo);
+        }	
+    	
+    }
+    
+    
+    public Repository openDialog(String fxml, String header, String title, boolean dialogType) {
+    	Dialog<Repository> dialog = null;
+    	try {
+    		// Carga de fxml
+    		FXMLLoader loader = new FXMLLoader();
+    	   	 
+        	ResourceBundle rb = ResourceBundle.getBundle(
+        				"i18n.main",
+        				new Locale.Builder().setLanguage("en").build()
+        				);
+        	loader.setResources(rb);
+        	loader.setCharset(Charset.forName("UTF-8"));
+        	
+        	VBox custom = (loader.load(getClass().getClassLoader().getResource(fxml).openStream()));
+        	
+        	// Se obtiene el controller
+        	DialogController controller = loader.getController();
+        	controller.setStage(stage);
+        	
+        	// Se crea el dialogo
+        	dialog = new Dialog<Repository>();
+        	dialog.setTitle(title);
+        	dialog.setHeaderText(header);
+        	DialogPane pane = dialog.getDialogPane();
+        	pane.setContent(custom);
+        	
+        	// Se agrega un button the ok
+        	ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
+        	dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+        	
+        	
+        	// Se agrega a la ventana
+        	Window window = dialog.getDialogPane().getScene().getWindow();
+            window.setOnCloseRequest(event -> window.hide());
+            
+            // Funcion para cuando se presione el boton 
+        	dialog.setResultConverter(new Callback<ButtonType, Repository>() {
+                @Override
+                public Repository call(ButtonType b) {
+                    if (b == buttonTypeOk) {
+                    	// Saber si el directorio es correcto
+                    	if(controller.directory.getText() != null && controller.directory.getText() != "" &&
+                				controller.name.getText() != null && controller.name.getText() != "") {
+                    		File file = new File(controller.directory.getText());
+                			if(file.exists() && file.isDirectory()) {
+                				Repository repository = new Repository(controller.name.getText(), controller.directory.getText());
+                				// Saber si es mi dialog tiene url
+                				if(dialogType) {
+                            		if(controller.url.getText() != null && controller.url.getText() != "") {
+                            			repository.setUrl(controller.url.getText());
+                            		}
+                            	}
+                				return repository;
+                			}
+                			else {
+                				System.out.println("Error 2: The root is not a directory");
+                				return null;
+                			}
+                    	} else {
+                    		System.out.println("Error 1: No directory or name");
+                    		return null;
+                    	}
+                     	
+                    }
+                    else return null;
+                 }
+             });
+             
+        	// Se muestra el dialogo
+             Optional<Repository> result = dialog.showAndWait();
+             
+             // Si esta presente se regresa
+             if (result.isPresent()) {
+            	 if(result.get() != null) return result.get();
+             }
+            return null;
+            //alert.showAndWait(); 
+    		
+    	} catch(IOException e) {
+    		e.printStackTrace();
+    	}
+		return null;
+    }
+    
+    /**
+     * Para guardar el repositorio en la base de datos
+     * @param repository
+     * @return
+     */
+    private boolean saveRepository(Repository repository) {
+    	DBQueryRepository query = new DBQueryRepository(MyDataSourceFactory.getDataSource(Commons.MYSQL));
+		query.putRepository(repository);
+		System.out.println("The repository is save in the db");
+		return true;
+    }
+    
+    
+    private void errorAlert(String title, String description) {
+    	Alert alert = new Alert(AlertType.ERROR);
+    	alert.setTitle(title);
+    	alert.setContentText(description);
+    	Window window = alert.getDialogPane().getScene().getWindow();
+        window.setOnCloseRequest(event -> window.hide());
+    	alert.show();
+    }
+    
+    
+    private void updateTreeViewList(Repository repository) {
+    	this.treeViewRepoList.getRoot().getChildren()
+            .add(new TreeItem<>(
+                repository,
+                new FontAwesomeIconView(FontAwesomeIcon.BOOK)
+            ));
     }
 }

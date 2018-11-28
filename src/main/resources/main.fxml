@@ -41,9 +41,15 @@
               <IconMenuItem icon="SIGN_OUT" text="%menu_file_exit" onAction="#exit"/>
             </items>
           </Menu>
-            <Menu mnemonicParsing="false" text="%menu_repo">
+          <Menu mnemonicParsing="false" text="%menu_repo">
+          	<items>
+          	    <IconMenuItem fx:id="init" icon="PLUS_CIRCLE" onAction="#openInit" text="init"/>
+          		<IconMenuItem fx:id="clone" icon="CLONE" onAction="#openClone" text="clone"/>
+          		<IconMenuItem fx:id="import" icon="DOWNLOAD" onAction="#openImport" text="import"/>
+          	</items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="%menu_tool">
               <items>
-                  <IconMenuItem icon="PLUS_CIRCLE" onAction="#openNew" text="%menu_repo_new"/>
                   <IconMenuItem fx:id="statusAction" onAction="#showStatus"  icon="ADJUST" text="%menu_repo_status"/>
                   <IconMenuItem fx:id="config" onAction="#openConfig"  icon="COG" text="Config"/>
                   <!-- TODO -->

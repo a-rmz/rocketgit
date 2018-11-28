@@ -3,8 +3,17 @@ package com.rocketgit.objects;
 public class Repository {
     String name;
     String path;
+    String url;
 
-    public Repository(String name, String path) {
+    public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public Repository(String name, String path) {
         setName(name);
         setPath(path);
     }

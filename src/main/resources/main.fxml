@@ -43,15 +43,17 @@
           </Menu>
           <Menu mnemonicParsing="false" text="%menu_repo">
           	<items>
-          	    <IconMenuItem fx:id="init" icon="PLUS_CIRCLE" onAction="#openInit" text="init"/>
-          		<IconMenuItem fx:id="clone" icon="CLONE" onAction="#openClone" text="clone"/>
-          		<IconMenuItem fx:id="import" icon="DOWNLOAD" onAction="#openImport" text="import"/>
+          	    <IconMenuItem fx:id="init" icon="PLUS_CIRCLE" onAction="#openInit" text="%menu_init"/>
+          		<IconMenuItem fx:id="clone" icon="CLONE" onAction="#openClone" text="%menu_clone"/>
+          		<IconMenuItem fx:id="import" icon="DOWNLOAD" onAction="#openImport" text="%menu_import"/>
+          		<SeparatorMenuItem mnemonicParsing="false" />
+          		<IconMenuItem fx:id="update" icon="EDIT" onAction="#updateName" text="%menu_update"/>
+          		<IconMenuItem fx:id="delete" icon="TRASH" onAction="#deleteRepository" text="%menu_delete"/>
           	</items>
           </Menu>
             <Menu mnemonicParsing="false" text="%menu_tool">
               <items>
                   <IconMenuItem fx:id="statusAction" onAction="#showStatus"  icon="ADJUST" text="%menu_repo_status"/>
-                  <IconMenuItem fx:id="config" onAction="#openConfig"  icon="COG" text="Config"/>
                   <!-- TODO -->
                   <IconMenuItem fx:id="diff"  icon="FILE_ALT" text="Diff"/>
                   <SeparatorMenuItem mnemonicParsing="false" />
@@ -77,9 +79,9 @@
                   <IconMenuItem onAction="#listRemotes" icon="LIST_UL" text="%menu_remote_list" />
                   <IconMenuItem onAction="#addRemote" fx:id="menuRemoteAdd" icon="CLOUD" text="%menu_remote_add" />
                   <!-- TODO NOT DOING -->
-                  <IconMenuItem icon="EDIT" text="%menu_remote_update" />
+                  <IconMenuItem icon="EDIT" onAction="#updateRemote" text="%menu_remote_update" />
                   <!-- TODO NOT DOING -->
-                  <IconMenuItem icon="MINUS_CIRCLE" text="%menu_remote_remove" />
+                  <IconMenuItem icon="MINUS_CIRCLE" onAction="#deleteRemote" text="%menu_remote_remove" />
               </items>
             </Menu>
         </menus>

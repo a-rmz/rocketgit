@@ -28,6 +28,8 @@ import javafx.util.Callback;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.RemoteAddCommand;
+import org.eclipse.jgit.api.RemoteRemoveCommand;
+import org.eclipse.jgit.api.RemoteSetUrlCommand;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.CheckoutConflictException;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -88,11 +90,11 @@ public class MainController {
         treeViewRepoList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         TreeItem<com.rocketgit.objects.Repository> root = new TreeItem<>();
         root.setGraphic(new FontAwesomeIconView(FontAwesomeIcon.GITHUB));
-        root.setValue(new com.rocketgit.objects.Repository("GitHub", ""));
+        root.setValue(new com.rocketgit.objects.Repository("GitHub", "", 0));
 
         root.getChildren()
             .add(new TreeItem<>(
-                new com.rocketgit.objects.Repository("Rocket.Git", ".git"),
+                new com.rocketgit.objects.Repository("Rocket.Git", ".git", 0),
                 new FontAwesomeIconView(FontAwesomeIcon.BOOK)
             ));
         
@@ -155,8 +157,9 @@ public class MainController {
     // Evento para abrir el Tree
     public void openTreeView(Repository repository) {
     	try {
+    		System.out.println(repository.getName());
 			treeController = loadView("tree.fxml").getController();
-			treeController.setRepo(repository.getName(), repository.getPath());
+			treeController.setRepo(repository);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -567,7 +570,6 @@ public class MainController {
      			// Para apuntar a la carpeta .git
      			repo.setPath(repo.getPath() + "/.git");
      			this.saveRepository(repo);
-     			this.updateTreeViewList(repo);
              }	
         }
     }
@@ -583,7 +585,6 @@ public class MainController {
         	File filegit = new File(repo.getPath());
         	if(filegit.exists() && filegit.isDirectory()) {
      			this.saveRepository(repo);
-     			this.updateTreeViewList(repo);
         	} else this.errorAlert("No Git Repository", "There is not git repository in this root. Please try again with the correct directory.");
         } 
     }
@@ -599,11 +600,62 @@ public class MainController {
         	System.out.println("Repositorio clonado correctamente");
         	repo.setPath(repo.getPath() + "/.git");
         	this.saveRepository(repo);
- 			this.updateTreeViewList(repo);
         }	
     	
     }
     
+    @FXML
+    public void updateName() {
+    	if (treeController != null) {
+    		//Alert alert = new Alert(AlertType.CONFIRMATION);
+    		Dialog<String> dialog = new TextInputDialog(" ");
+    		dialog.setTitle("Write the new name of the Repository");
+    		dialog.setHeaderText("Enter some text, or use default value.");
+
+    		Optional<String> result = dialog.showAndWait();
+    		String entered = null;
+
+    		if (result.isPresent()) {
+
+    		    entered = result.get();
+    		    if(entered != null && entered != "") {    		  
+            		treeController.repository.setName(entered);
+            		DBQueryRepository query = new DBQueryRepository(MyDataSourceFactory.getDataSource(Commons.MYSQL));
+    				query.updateNameRepository(treeController.repository);
+    				treeViewRepoList.refresh();
+
+    		    }
+    		}
+    		
+    	}
+    }
+    
+    @FXML
+    public void deleteRepository() {
+    	if (treeController != null) {
+    		Alert alert = new Alert(AlertType.CONFIRMATION);
+        	alert.setTitle("DELETE Repository");
+        	alert.setContentText("Are you sure you want to delete "+ 
+        			treeController.treeRepoName.getText() + 
+        			" repository?");
+        	Window window = alert.getDialogPane().getScene().getWindow();
+            window.setOnCloseRequest(event -> window.hide());
+            
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
+            	DBQueryRepository query = new DBQueryRepository(
+            			MyDataSourceFactory.getDataSource(Commons.MYSQL));
+        		boolean sucess = query.deleteRepository(treeController.repository);
+        		if(sucess) {
+        			System.out.println("Repositorio eliminado");
+        			removeTreeViewList(treeController.repository);
+        		}
+            }
+            
+        	
+    	}
+    }
     
     public Repository openDialog(String fxml, String header, String title, boolean dialogType) {
     	Dialog<Repository> dialog = null;
@@ -650,7 +702,7 @@ public class MainController {
                 				controller.name.getText() != null && controller.name.getText() != "") {
                     		File file = new File(controller.directory.getText());
                 			if(file.exists() && file.isDirectory()) {
-                				Repository repository = new Repository(controller.name.getText(), controller.directory.getText());
+                				Repository repository = new Repository(controller.name.getText(), controller.directory.getText(), -1);
                 				// Saber si es mi dialog tiene url
                 				if(dialogType) {
                             		if(controller.url.getText() != null && controller.url.getText() != "") {
@@ -697,7 +749,10 @@ public class MainController {
     private boolean saveRepository(Repository repository) {
     	DBQueryRepository query = new DBQueryRepository(MyDataSourceFactory.getDataSource(Commons.MYSQL));
 		query.putRepository(repository);
-		System.out.println("The repository is save in the db");
+		int id = query.getRepositoryId(repository);
+		repository.setId(id);
+		System.out.println("The repository is save in the db with id: " + id);
+		addTreeViewList(repository);
 		return true;
     }
     
@@ -711,12 +766,122 @@ public class MainController {
     	alert.show();
     }
     
-    
-    private void updateTreeViewList(Repository repository) {
+    private void removeTreeViewList(Repository repository) {
+    	this.treeViewRepoList.getRoot().getChildren().forEach(r -> {
+    		if(r.getValue().getName() == repository.getName() && r.getValue().getPath() == repository.getPath()) {
+    			 TreeItem<com.rocketgit.objects.Repository> treeItem = 
+    					 (TreeItem<com.rocketgit.objects.Repository>) treeViewRepoList.getSelectionModel().getSelectedItem();	
+    			 treeItem.getParent().getChildren().remove(treeItem);
+    		}
+    	});
+    	System.out.println("Repository remove");
+    }
+    private void addTreeViewList(Repository repository) {
     	this.treeViewRepoList.getRoot().getChildren()
             .add(new TreeItem<>(
                 repository,
                 new FontAwesomeIconView(FontAwesomeIcon.BOOK)
             ));
+    }
+    
+    
+    /**
+     * Change the remote default to push :)
+     * @throws GitAPIException 
+     */
+    @FXML
+    public void deleteRemote() throws GitAPIException {
+    	if(treeController != null) {
+            Collection<RemoteConfig> remotes = treeController.git.remoteList().call();
+            ArrayList<String> dialogData = new ArrayList<String>();
+            remotes.forEach(re -> {
+            	dialogData.add(re.getName());
+            });
+            
+    		Dialog<String>dialog = new ChoiceDialog<String>(dialogData.get(0), dialogData);
+    		dialog.setTitle("Delete Remote");
+    		dialog.setHeaderText("Select your remote");
+
+    		Optional<String> result = dialog.showAndWait();
+    		String selected = null;
+    				
+    		if (result.isPresent()) {
+
+    		    selected = result.get();
+    		    if(selected != null) {
+    		    	// Obtenemos el comando
+    		    	RemoteRemoveCommand command = treeController.git.remoteRemove();
+    		    	// Se agrega el nombre del repositorio a ser eliminado
+    		    	command.setName(selected);
+    		    	// Se ejecuta
+    		    	command.call();
+    		    }
+    		}
+    	}
+    }
+    
+    @FXML
+    public void updateRemote() throws GitAPIException {
+    	if(treeController != null) {
+        	try {
+        		// Carga de fxml
+        		FXMLLoader loader = new FXMLLoader();
+        	   	 
+            	ResourceBundle rb = ResourceBundle.getBundle(
+            				"i18n.main",
+            				new Locale.Builder().setLanguage("en").build()
+            				);
+            	loader.setResources(rb);
+            	loader.setCharset(Charset.forName("UTF-8"));
+            	
+            	VBox custom = (loader.load(getClass().getClassLoader().getResource("remoteupdate.fxml").openStream()));
+            	
+            	// Se obtiene el controller
+            	UpdateRemoteController controller = loader.getController();
+            	Collection<RemoteConfig> remotes = treeController.git.remoteList().call();
+            	
+            	// Se crea el dialogo
+            	Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            	alert.setTitle("Update Name Remote");
+            	alert.setHeaderText("Select the remote and write the new name");
+            	DialogPane pane = alert.getDialogPane();
+            	pane.setContent(custom);            	
+            	
+            	// Se agrega a la ventana
+            	Window window = alert.getDialogPane().getScene().getWindow();
+                window.setOnCloseRequest(event -> window.hide());
+              
+            	controller.setRemotes(remotes);
+
+            	// Se muestra la alerta
+                Optional<ButtonType> result = alert.showAndWait();
+
+                 // Si esta presente se regresa
+                 if (result.get() == ButtonType.OK) {
+                	 // Se valida que los inputs son correctos
+                	 if(controller.select.getValue() != null && 
+                			 controller.url.getText() != null &&
+                			 controller.url.getText().length() > 0) {
+                		// Se busca el comando
+                		RemoteSetUrlCommand command = treeController.git.remoteSetUrl();
+                		// Se agrega el nombre
+                		command.setName(controller.select.getValue().getName());
+                		// Se agrega la urish
+                        try {
+                        	URIish urIish = new URIish(controller.url.getText());
+                            command.setUri(urIish);
+                            // Se llama al comando
+                            command.call();
+                        } catch (URISyntaxException e) {
+                            e.printStackTrace();
+                            return;
+                        }
+
+                	 }
+                 }	
+        	}catch(IOException e) {
+        		e.printStackTrace();
+        	}
+    	}
     }
 }

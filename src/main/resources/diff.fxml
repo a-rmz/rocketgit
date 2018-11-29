@@ -6,26 +6,33 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.control.TreeTableColumn?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" stylesheets="main-stylesheet.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rocketgit.controller.DiffController">
+<BorderPane fx:id="root" prefHeight="600.0" prefWidth="800.0" stylesheets="main-stylesheet.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rocketgit.controller.DiffController">
 	<center>
 		<BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 			<center>
 				<GridPane prefHeight="500.0" prefWidth="500.0" BorderPane.alignment="CENTER">
 					<children>
-						<TableView prefHeight="500.0" prefWidth="300.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+						<TreeTableView fx:id="treeTableView" prefHeight="600.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="0" >				
+        						<columns>
+        							<TreeTableColumn fx:id="treeTableColumn" text="%files_title"/>
+        						</columns>
+        				</TreeTableView>
+<!-- 						<TableView prefHeight="600.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="0"> -->
+<!-- 							<columns> -->
+<!-- 								<TableColumn editable="false" prefWidth="130.0" sortable="false" text="%files_title" /> -->
+<!-- 							</columns> -->
+<!-- 						</TableView> -->
+						<TableView fx:id="treeTableViewOld" prefHeight="500.0" prefWidth="350.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
 							<columns>
-								<TableColumn editable="false" prefWidth="250.0" sortable="false" text="%file_old" />
+								<TableColumn fx:id="treeTableColumnOld" editable="false" prefWidth="250.0" sortable="false" text="%file_old" />
 							</columns>
 						</TableView>
-						<TableView prefHeight="600.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+						<TableView fx:id="treeTableViewNew" prefHeight="600.0" prefWidth="350.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
 							<columns>
-								<TableColumn editable="false" prefWidth="250.0" sortable="false" text="%file_new" />
-							</columns>
-						</TableView>
-						<TableView prefHeight="600.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
-							<columns>
-								<TableColumn editable="false" prefWidth="130.0" sortable="false" text="%files_title" />
+								<TableColumn fx:id="treeTableColumnNew" editable="false" prefWidth="250.0" sortable="false" text="%file_new" />
 							</columns>
 						</TableView>
 					</children>

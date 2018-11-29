@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
@@ -40,8 +41,7 @@ public class TreeController {
 
     public void setRepo(com.rocketgit.objects.Repository repo) {
         try {
-        	this.repository = repo;
-        	System.out.println(repo.getPath());
+            this.repository = repo;
             git = Git.open(new File(repo.getPath()));
             treeRepoName.setText(repo.getName());
             treeRepoBranch.setText(String.format("(%s)", git.getRepository().getBranch()));

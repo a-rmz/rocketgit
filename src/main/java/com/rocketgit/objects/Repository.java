@@ -34,6 +34,11 @@ public class Repository {
         setPath(path);
     }*/
 
+    public Repository(String name, String path) {
+        setName(name);
+        setPath(path);
+    }
+
     public String getName() {
         return name;
     }

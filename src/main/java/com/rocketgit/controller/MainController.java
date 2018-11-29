@@ -6,6 +6,7 @@ import com.rocketgit.database.DBQueryRepository;
 import com.rocketgit.database.MyDataSourceFactory;
 import com.rocketgit.objects.Repository;
 
+import com.rocketgit.components.IconMenuItem;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
@@ -18,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -27,6 +29,22 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Callback;
+import javafx.scene.text.Text;
+import javafx.stage.Window;
+import org.eclipse.jgit.api.PullResult;
+import org.eclipse.jgit.api.RemoteAddCommand;
+import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.api.errors.CheckoutConflictException;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.transport.*;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
@@ -83,8 +101,9 @@ public class MainController {
     public void initialize() {
     	initializeBundle();
         initRepoList();
-        
+    
     }
+
 
     
     public void initializeBundle() {
@@ -160,6 +179,17 @@ public class MainController {
     public void openConfig(ActionEvent actionEvent)  {    	
     	try {
 			loadView("config.fxml");
+
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}   	
+    }
+    
+    // Evento para abrir el diff
+    public void openDiff(ActionEvent actionEvent)  {    	
+    	try {
+			loadView("diff.fxml");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -374,43 +404,7 @@ public class MainController {
         }
     }
 
-    public void pull() {
-        if (treeController != null) {
-            String branch;
-            try {
-                branch = treeController.git.getRepository().getBranch();
-            } catch (IOException e) {
-                branch = "master";
-            }
-
-            try {
-                PullResult result = treeController.git
-                    .pull()
-                    .setRemoteBranchName(branch)
-                    .setRemote("origin")
-                    .call();
-
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle(bundle.getString("pull/title"));
-
-                if (result.getMergeResult().getMergeStatus().toString().equals("Already-up-to-date")) {
-                    alert.setHeaderText(null);
-                    alert.setContentText(bundle.getString("pull/up_to_date/message"));
-                } else if (result.isSuccessful()) {
-                    alert.setHeaderText(bundle.getString("pull/success/header"));
-                    alert.setContentText(bundle.getString("pull/success/message") + result.getFetchedFrom());
-                } else {
-                   alert.setAlertType(Alert.AlertType.ERROR);
-                   alert.setHeaderText(bundle.getString("pull/other/header"));
-                   alert.setContentText(result.toString());
-                }
-
-                alert.showAndWait();
-            } catch (GitAPIException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+   
 
     public void branchCreate() {
         if (treeController != null) {
@@ -940,6 +934,52 @@ public class MainController {
         		e.printStackTrace();
         	}
     	}
+    }
+   
+
+
+    
+
+    
+
+   
+
+    public void pull() {
+        if (treeController != null) {
+            String branch;
+            try {
+                branch = treeController.git.getRepository().getBranch();
+            } catch (IOException e) {
+                branch = "master";
+            }
+
+            try {
+                PullResult result = treeController.git
+                    .pull()
+                    .setRemoteBranchName(branch)
+                    .setRemote("origin")
+                    .call();
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(bundle.getString("pull/title"));
+
+                if (result.getMergeResult().getMergeStatus().toString().equals("Already-up-to-date")) {
+                    alert.setHeaderText(null);
+                    alert.setContentText(bundle.getString("pull/up_to_date/message"));
+                } else if (result.isSuccessful()) {
+                    alert.setHeaderText(bundle.getString("pull/success/header"));
+                    alert.setContentText(bundle.getString("pull/success/message") + result.getFetchedFrom());
+                } else {
+                   alert.setAlertType(Alert.AlertType.ERROR);
+                   alert.setHeaderText(bundle.getString("pull/other/header"));
+                   alert.setContentText(result.toString());
+                }
+
+                alert.showAndWait();
+            } catch (GitAPIException e) {
+                e.printStackTrace();
+            }
+        }
     }
    
 }

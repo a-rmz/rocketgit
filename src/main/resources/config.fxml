@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.rocketgit.components.*?>
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<?import org.controlsfx.control.textfield.CustomTextField?>
-<?import org.controlsfx.control.ToggleSwitch?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.shape.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import java.lang.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.HBox?>
-
-      <BorderPane fx:id="border_pane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" stylesheets="main-stylesheet.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rocketgit.controller.ConfigController" >
+<?import javafx.scene.shape.Line?>
+<?import org.controlsfx.control.ToggleSwitch?>
+<BorderPane fx:id="border_pane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" stylesheets="main-stylesheet.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rocketgit.controller.ConfigController" >
          <center>
 						<VBox prefHeight="200.0" prefWidth="200.0" >
 			   <children>

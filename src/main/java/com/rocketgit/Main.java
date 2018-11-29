@@ -11,6 +11,7 @@ import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+
 public class Main extends Application {
 
     @Override
@@ -41,7 +42,7 @@ public class Main extends Application {
         
         root.setStyle("-fx-font-family: 'Comfortaa';");
         stage.setTitle(rb.getString("title"));
-        stage.setScene(new Scene(root, 800, 600));
+        stage.setScene(new Scene(root, 1000, 600));
         stage.show();
     }
 

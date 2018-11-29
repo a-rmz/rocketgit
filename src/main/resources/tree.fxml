@@ -1,31 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.rocketgit.components.*?>
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 
-
-<BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" stylesheets="main-stylesheet.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rocketgit.controller.TreeController" >
-         <center>
-            <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-              <columns>
-                <TableColumn editable="false" prefWidth="75.0" sortable="false" text="%committree_column_graph" />
-                <TableColumn editable="false" prefWidth="75.0" sortable="false" text="%committree_column_commit" />
-                  <TableColumn editable="false" prefWidth="75.0" sortable="false" text="%committree_column_author" />
-                  <TableColumn editable="false" prefWidth="275.3399963378906" sortable="false" text="%committree_column_description" />
-                  <TableColumn editable="false" minWidth="0.0" prefWidth="99.15997314453125" sortable="false" text="%committree_column_date" />
-              </columns>
-            </TableView>
-         </center>
-         <top>
-            <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-              <items>
-                  <Label text="Repo Name" style="-fx-font-size: 15;"/>
-                  <Pane HBox.hgrow="ALWAYS" />
-                  <ChoiceBox prefWidth="150.0" styleClass="rounded-borders" />
-              </items>
-            </ToolBar>
-         </top>
-      </BorderPane>
+<BorderPane prefHeight="200.0" prefWidth="968.0" stylesheets="main-stylesheet.css" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rocketgit.controller.TreeController">
+    <top>
+        <ToolBar prefHeight="40.0" prefWidth="277.0" BorderPane.alignment="CENTER">
+            <items>
+                <Label fx:id="treeRepoName" style="-fx-font-size: 15;" text="Repo Name" />
+                <Label fx:id="treeRepoBranch" style="-fx-font-size: 13;" text="(current branch)" />
+                <Pane HBox.hgrow="ALWAYS" />
+                <ChoiceBox prefWidth="150.0" styleClass="rounded-borders" />
+            </items>
+        </ToolBar>
+    </top>
+    <center>
+        <TableView fx:id="commitTableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <columns>
+                <TableColumn editable="false" prefWidth="68.0" sortable="false" text="%committree_column_graph">
+                    <cellValueFactory><PropertyValueFactory property="graph" /></cellValueFactory>
+                </TableColumn>
+                <TableColumn editable="false" minWidth="5.0" prefWidth="101.0" sortable="false" text="%committree_column_commit">
+                    <cellValueFactory><PropertyValueFactory property="id" /></cellValueFactory>
+                </TableColumn>
+                <TableColumn editable="false" prefWidth="225.0" sortable="false" text="%committree_column_author">
+                    <cellValueFactory><PropertyValueFactory property="author" /></cellValueFactory>
+                </TableColumn>
+                <TableColumn editable="false" prefWidth="398.0" sortable="false" text="%committree_column_description">
+                    <cellValueFactory><PropertyValueFactory property="shortMessage" /></cellValueFactory>
+                </TableColumn>
+                <TableColumn editable="false" minWidth="0.0" prefWidth="131.0" sortable="false" text="%committree_column_date">
+                    <cellValueFactory><PropertyValueFactory property="date" /></cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>

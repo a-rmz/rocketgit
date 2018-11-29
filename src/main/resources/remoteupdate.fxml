@@ -9,12 +9,12 @@
    <children>
       <GridPane alignment="CENTER">
          <children>
-            <Label text="Repo Update">
+            <Label text="%remote_name">
                <padding>
                   <Insets right="20.0" />
                </padding>
             </Label>
-            <Label text="New Urish" GridPane.rowIndex="2">
+            <Label text="%remote_url" GridPane.rowIndex="2">
                <padding>
                   <Insets right="20.0" />
                </padding>

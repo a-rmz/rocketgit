@@ -9,7 +9,7 @@
    <children>
       <GridPane alignment="CENTER">
          <children>
-            <Label text="Repo Name">
+            <Label text="%repo_new_name">
                <padding>
                   <Insets right="20.0" />
                </padding>
@@ -19,7 +19,7 @@
                   <Insets left="5.0" right="5.0" />
                </GridPane.margin>
             </TextField>
-            <Label text="Directory" GridPane.rowIndex="2">
+            <Label text="%repo_new_directory" GridPane.rowIndex="2">
                <padding>
                   <Insets right="20.0" />
                </padding>

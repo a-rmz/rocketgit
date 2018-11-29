@@ -13,6 +13,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -20,6 +22,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -46,7 +49,9 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 public class MainController {
-
+	
+	private String language; 
+	
 	private Stage stage;
 	
     @FXML
@@ -64,19 +69,31 @@ public class MainController {
     @FXML
     IconMenuItem addToStageButton;
     
+    
     public void setStage(Stage stage) {
     	this.stage = stage;
+    }
+    
+    public void setLanguague(String lgn) {
+    	this.language = lgn;
+    	initializeBundle();
     }
 
     @FXML
     public void initialize() {
+    	initializeBundle();
         initRepoList();
-        bundle = ResourceBundle.getBundle(
-            "i18n.main",
-            new Locale.Builder().setLanguage("en").build()
-        );
+        
     }
 
+    
+    public void initializeBundle() {
+    	bundle = ResourceBundle.getBundle(
+                "i18n.main",
+                new Locale.Builder().setLanguage(language).build()
+            );
+    }
+    
     public void exit(ActionEvent actionEvent) {
         Platform.exit();
     }
@@ -130,12 +147,7 @@ public class MainController {
     // Para cargar una nueva vista
     public FXMLLoader loadView(String fxml) throws IOException {
     	FXMLLoader loader = new FXMLLoader();
-   	 
-    	ResourceBundle rb = ResourceBundle.getBundle(
-    				"i18n.main",
-    				new Locale.Builder().setLanguage("en").build()
-    				);
-    	loader.setResources(rb);
+    	loader.setResources(bundle);
     	loader.setCharset(Charset.forName("UTF-8"));
     	Node root = (loader.load(getClass().getClassLoader().getResource(fxml).openStream()));
     	root.setStyle("-fx-font-family: 'Comfortaa';");
@@ -164,6 +176,61 @@ public class MainController {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}  
+    }
+    
+    @FXML
+    public void changeLanguage() throws IOException {
+    	ArrayList<String> dialogData = new ArrayList<String>();
+    	dialogData.add(bundle.getString("language/spanish"));
+    	dialogData.add(bundle.getString("language/english"));
+    	Dialog<String>dialog = new ChoiceDialog<String>(dialogData.get(0), dialogData);
+		dialog.setTitle(bundle.getString("language/title"));
+		dialog.setHeaderText(bundle.getString("language/header"));
+
+		Optional<String> result = dialog.showAndWait();
+		String selected = null;
+				
+		if (result.isPresent()) {
+
+		    selected = result.get();
+		    if(selected != null) {
+		    	switch(selected) {
+		    		case "Español":
+		    		case "Spanish":
+		    			language = "es";
+			    		break;
+		    		case "Ingles":
+		    		case "English":
+		    			language = "en";
+			    		break;
+		    		default:
+		    			language = "en";
+				    	break;
+		    	}
+		    }
+		    this.initializeBundle();
+	        FXMLLoader loader = new FXMLLoader();
+	        loader.setResources(bundle);
+	        loader.setCharset(Charset.forName("UTF-8"));
+	        // Se carga la fuente que usaremos
+	        try {
+	            Font.loadFont(getClass().getClassLoader().getResource("Comfortaa-Regular.ttf").toExternalForm(), 13);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            System.exit(0);
+	        }
+	       
+		    Parent root = loader.load(getClass().getClassLoader().getResource("main.fxml").openStream());
+		    MainController controller = loader.getController();
+	        
+	        controller.setStage(stage);
+	        controller.setLanguague(language);
+	        
+	        root.setStyle("-fx-font-family: 'Comfortaa';");
+	        stage.setTitle(bundle.getString("title"));
+	        stage.setScene(new Scene(root, 1000, 600));
+	        stage.show();
+		}
     }
 
     // Git interaction methods
@@ -561,8 +628,8 @@ public class MainController {
     @FXML
     public void openInit() throws IllegalStateException, GitAPIException {
         Repository repo = openDialog("initrepo.fxml", 
-        		"Write the root of your init repository and name",
-        		"Init Git Repository", false);
+        		bundle.getString("repo/init/header"),
+        		bundle.getString("repo/init/title"), false);
         System.out.println(repo);
         if(repo != null) {
              try (Git git = Git.init().setDirectory(new File(repo.getPath())).call()) {
@@ -577,8 +644,8 @@ public class MainController {
     @FXML
     public void openImport() {
     	Repository repo = openDialog("initrepo.fxml",
-    			"Write the directory of your .git and the repository name", 
-    			"Import Git Repository", false);
+    			bundle.getString("repo/import/header"), 
+    			bundle.getString("repo/import/title"), false);
         System.out.println(repo);
         if(repo != null) {
         	repo.setPath(repo.getPath() + "/.git");
@@ -592,8 +659,8 @@ public class MainController {
     @FXML
     public void openClone() throws InvalidRemoteException, TransportException, GitAPIException {
     	Repository repo = openDialog("clone.fxml",
-    			"Write the directory and name of your repository. Write the url of the repository to clone", 
-    			"Clone Git Repository", true);
+    			bundle.getString("repo/clone/header"), 
+    			bundle.getString("repo/clone/title"), true);
         System.out.println(repo);
         if(repo != null) {
         	Git.cloneRepository().setURI(repo.getUrl()).setDirectory(new File(repo.getPath())).call();
@@ -609,8 +676,8 @@ public class MainController {
     	if (treeController != null) {
     		//Alert alert = new Alert(AlertType.CONFIRMATION);
     		Dialog<String> dialog = new TextInputDialog(" ");
-    		dialog.setTitle("Write the new name of the Repository");
-    		dialog.setHeaderText("Enter some text, or use default value.");
+    		dialog.setTitle(bundle.getString("repo/update/title"));
+    		dialog.setHeaderText(bundle.getString("repo/update/header"));
 
     		Optional<String> result = dialog.showAndWait();
     		String entered = null;
@@ -634,10 +701,10 @@ public class MainController {
     public void deleteRepository() {
     	if (treeController != null) {
     		Alert alert = new Alert(AlertType.CONFIRMATION);
-        	alert.setTitle("DELETE Repository");
-        	alert.setContentText("Are you sure you want to delete "+ 
+        	alert.setTitle(bundle.getString("repo/delete/title"));
+        	alert.setContentText(bundle.getString("repo/delete/header/first") + 
         			treeController.treeRepoName.getText() + 
-        			" repository?");
+        			bundle.getString("repo/delete/header/second"));
         	Window window = alert.getDialogPane().getScene().getWindow();
             window.setOnCloseRequest(event -> window.hide());
             
@@ -661,13 +728,8 @@ public class MainController {
     	Dialog<Repository> dialog = null;
     	try {
     		// Carga de fxml
-    		FXMLLoader loader = new FXMLLoader();
-    	   	 
-        	ResourceBundle rb = ResourceBundle.getBundle(
-        				"i18n.main",
-        				new Locale.Builder().setLanguage("en").build()
-        				);
-        	loader.setResources(rb);
+    		FXMLLoader loader = new FXMLLoader();    	   
+        	loader.setResources(bundle);
         	loader.setCharset(Charset.forName("UTF-8"));
         	
         	VBox custom = (loader.load(getClass().getClassLoader().getResource(fxml).openStream()));
@@ -799,8 +861,8 @@ public class MainController {
             });
             
     		Dialog<String>dialog = new ChoiceDialog<String>(dialogData.get(0), dialogData);
-    		dialog.setTitle("Delete Remote");
-    		dialog.setHeaderText("Select your remote");
+    		dialog.setTitle(bundle.getString("repo/delete/title"));
+    		dialog.setHeaderText(bundle.getString("repo/delete/header"));
 
     		Optional<String> result = dialog.showAndWait();
     		String selected = null;
@@ -825,13 +887,8 @@ public class MainController {
     	if(treeController != null) {
         	try {
         		// Carga de fxml
-        		FXMLLoader loader = new FXMLLoader();
-        	   	 
-            	ResourceBundle rb = ResourceBundle.getBundle(
-            				"i18n.main",
-            				new Locale.Builder().setLanguage("en").build()
-            				);
-            	loader.setResources(rb);
+        		FXMLLoader loader = new FXMLLoader();        	   	            	
+            	loader.setResources(bundle);
             	loader.setCharset(Charset.forName("UTF-8"));
             	
             	VBox custom = (loader.load(getClass().getClassLoader().getResource("remoteupdate.fxml").openStream()));
@@ -842,8 +899,8 @@ public class MainController {
             	
             	// Se crea el dialogo
             	Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            	alert.setTitle("Update Name Remote");
-            	alert.setHeaderText("Select the remote and write the new name");
+            	alert.setTitle(bundle.getString("remote/update/title"));
+            	alert.setHeaderText(bundle.getString("remote/update/header"));
             	DialogPane pane = alert.getDialogPane();
             	pane.setContent(custom);            	
             	
@@ -884,4 +941,5 @@ public class MainController {
         	}
     	}
     }
+   
 }

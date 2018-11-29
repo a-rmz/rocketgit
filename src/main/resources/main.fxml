@@ -38,6 +38,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="%menu_file">
             <items>
+             	<IconMenuItem icon="LANGUAGE" text="%menu_language" onAction="#changeLanguage"/>
               <IconMenuItem icon="SIGN_OUT" text="%menu_file_exit" onAction="#exit"/>
             </items>
           </Menu>

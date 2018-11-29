@@ -18,6 +18,8 @@ import com.rocketgit.objects.Repository;
 
 
 public class Main extends Application {
+	
+	Parent root;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -49,6 +51,7 @@ public class Main extends Application {
         Parent root = loader.load(getClass().getClassLoader().getResource("main.fxml").openStream());
         
         MainController controller = loader.getController();
+        
         controller.setStage(stage);
         
         root.setStyle("-fx-font-family: 'Comfortaa';");

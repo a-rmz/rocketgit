@@ -862,7 +862,7 @@ public class MainController {
             
     		Dialog<String>dialog = new ChoiceDialog<String>(dialogData.get(0), dialogData);
     		dialog.setTitle(bundle.getString("repo/delete/title"));
-    		dialog.setHeaderText(bundle.getString("repo/delete/header"));
+    		dialog.setHeaderText(bundle.getString("remote/delete/header"));
 
     		Optional<String> result = dialog.showAndWait();
     		String selected = null;

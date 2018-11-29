@@ -27,6 +27,8 @@ import java.util.ArrayList;
 public class TreeController {
 
     public Git git;
+    
+    public com.rocketgit.objects.Repository repository;
 
     @FXML
     Label treeRepoName;
@@ -37,10 +39,11 @@ public class TreeController {
     @FXML
     TableView<Commit> commitTableView;
 
-    public void setRepo(String name, String path) {
+    public void setRepo(com.rocketgit.objects.Repository repo) {
         try {
-            git = Git.open(new File(path));
-            treeRepoName.setText(name);
+            this.repository = repo;
+            git = Git.open(new File(repo.getPath()));
+            treeRepoName.setText(repo.getName());
             treeRepoBranch.setText(String.format("(%s)", git.getRepository().getBranch()));
 
             ArrayList<Commit> commits = new ArrayList<>();
